@@ -189,9 +189,9 @@ Crear un proyecto con PostgreSQL y Redis, y tres servicios conectados al mismo r
 
 | Servicio | Start command | Puerto |
 |---|---|---|
-| API | `sh -c 'pnpm db:deploy && pnpm start:api'` | Railway asigna `PORT` |
+| API | `sh -c 'pnpm db:deploy && pnpm start:api'` | `PORT=3001` |
 | Worker | `pnpm start:worker` | — |
-| Web | `pnpm start:web` | Railway asigna `PORT` |
+| Web | `pnpm start:web` | `PORT=3000` |
 
 Variables de API y worker:
 
@@ -202,6 +202,7 @@ AI_PROVIDER=demo
 PUBLIC_INFO_PROVIDER=demo
 WEBHOOK_PROVIDER=demo
 WEB_URL=https://<dominio-web>
+PORT=3001 # sólo API
 ```
 
 Variables del servicio web:
@@ -212,6 +213,7 @@ NEXT_PUBLIC_API_URL=https://<dominio-api>/api
 NEXTAUTH_URL=https://<dominio-web>
 NEXTAUTH_SECRET=<secreto-aleatorio>
 AUTH_DEMO_MODE=true
+PORT=3000
 ```
 
 Generar dominios públicos sólo para API y web. El worker se comunica con PostgreSQL y Redis mediante private networking y no necesita dominio.
@@ -219,6 +221,12 @@ Generar dominios públicos sólo para API y web. El worker se comunica con Postg
 Para Google OAuth, agregar `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET`; en producción usar allowlist/dominio corporativo. El modo credentials existe sólo para el demo sintético.
 
 ## Verificación
+
+Demo pública:
+
+- UI: <https://web-production-43317.up.railway.app>
+- API health: <https://xepelin-growth-case-production.up.railway.app/health>
+- Evidencia reproducible de deploy, batch y webhook HTTP: [docs/VALIDATION.md](docs/VALIDATION.md)
 
 ```bash
 pnpm test
