@@ -238,6 +238,8 @@ pnpm build
 
 Deliberadamente fuera: RBAC completo, multi-tenancy, deduplicación probabilística global, scraping masivo, reconciliador outbox, tracing distribuido e infraestructura como código. La siguiente mejora técnica sería un transactional outbox para eliminar la ventana entre commit del batch y enqueue del job.
 
+El esfuerzo total superó el objetivo de 4–6 horas porque se añadió hardening de deploy, evidencia de webhook live y QA final. La declaración completa de alcance, uso de Codex y consumo de **0 tokens de LLM en la demo** está en [docs/DELIVERY_NOTES.md](docs/DELIVERY_NOTES.md).
+
 ## Estrategia Growth
 
-El diagnóstico, priorización, experimento y build-vs-buy están documentados en [docs/GROWTH_STRATEGY.md](docs/GROWTH_STRATEGY.md). La presentación se encuentra en `output/slides/`.
+El diagnóstico, priorización, experimento y build-vs-buy están documentados en [docs/GROWTH_STRATEGY.md](docs/GROWTH_STRATEGY.md). La presentación final está en [output/slides/xepelin-growth-engineer-case-final.pptx](output/slides/xepelin-growth-engineer-case-final.pptx).
