@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Lead, PublicCompanyInfo } from "@xepelin/core";
-import { DemoAiEnrichmentProvider, DemoPublicInfoProvider, estimateOpenAiCostUsd } from "./providers.js";
+import { DemoAiEnrichmentProvider, DemoPublicInfoProvider, estimateOpenAiCostUsd, LivePublicInfoProvider } from "./providers.js";
 
 const lead: Lead = {
   id: "lead-1",
@@ -28,6 +28,8 @@ const publicInfo: PublicCompanyInfo = {
 };
 
 describe("AI providers", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
   it("builds two differentiated synthetic public sources", async () => {
     const info = await new DemoPublicInfoProvider().fetch({
       ...lead,
@@ -59,5 +61,28 @@ describe("AI providers", () => {
 
     expect(estimateOpenAiCostUsd("gpt-5-mini-2025-08-07", usage)).toBe(0.00093225);
     expect(estimateOpenAiCostUsd("another-model", usage)).toBeNull();
+  });
+
+  it("uses Wikipedia as a free live search source when Brave is not configured", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response("<html><body>Retail regional y servicios financieros.<script>ignore()</script></body></html>"))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        query: { search: [{ title: "Cencosud", snippet: "Empresa multinacional de <b>retail</b> chilena." }] },
+      }), { headers: { "content-type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const info = await new LivePublicInfoProvider().fetch({
+      ...lead,
+      legalName: "Cencosud S.A.",
+      website: "https://www.cencosud.com",
+    });
+
+    expect(info.sources).toHaveLength(2);
+    expect(info.sources[0]?.snippet).toContain("Retail regional");
+    expect(info.sources[1]).toMatchObject({
+      url: "https://es.wikipedia.org/wiki/Cencosud",
+      title: "Cencosud — Wikipedia",
+      snippet: "Empresa multinacional de retail chilena.",
+    });
   });
 });

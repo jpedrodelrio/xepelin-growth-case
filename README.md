@@ -122,6 +122,7 @@ PUBLIC_INFO_PROVIDER=live
 WEBHOOK_PROVIDER=live
 OPENAI_API_KEY=...
 OPENAI_MODEL=gpt-5-mini-2025-08-07
+# Opcional: si se omite, la segunda fuente usa Wikipedia.
 BRAVE_SEARCH_API_KEY=...
 ```
 
@@ -199,7 +200,7 @@ Para crear los tres escenarios se omite `--scenario`. Son ocho llamadas AI váli
 | Requisito | Implementación |
 |---|---|
 | `ready → ai_enriching` | La máquina de estados y `ProcessLead` hacen ambas transiciones explícitas |
-| Sitio + fuente adicional | `DemoPublicInfoProvider`: dos fuentes sintéticas; `LivePublicInfoProvider`: sitio + Brave Search |
+| Sitio + fuente adicional | `DemoPublicInfoProvider`: dos fuentes sintéticas; `LivePublicInfoProvider`: sitio + Brave Search o fallback gratuito a Wikipedia |
 | Output estructurado | Responses API con Structured Outputs y schema Zod |
 | Persistencia y terminalidad | Output y metadata se guardan antes de `ai_ready`; fallas terminan en `ai_failed` con razón tipada |
 | Vista detalle | Score, justificación, ice-breaker, pain hypothesis, evidencia y telemetría live/demo |

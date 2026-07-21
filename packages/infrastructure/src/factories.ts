@@ -10,7 +10,6 @@ import {
 
 export function createPublicInfoProvider(): PublicInfoProvider {
   if (process.env.PUBLIC_INFO_PROVIDER === "live") {
-    if (!process.env.BRAVE_SEARCH_API_KEY) throw new Error("BRAVE_SEARCH_API_KEY is required in live mode");
     return new LivePublicInfoProvider(process.env.BRAVE_SEARCH_API_KEY);
   }
   return new DemoPublicInfoProvider();

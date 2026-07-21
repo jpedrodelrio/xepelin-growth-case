@@ -115,7 +115,7 @@ function syntheticProfileFor(legalName: string): SyntheticCompanyProfile {
 }
 
 export class LivePublicInfoProvider implements PublicInfoProvider {
-  constructor(private readonly braveApiKey: string) {}
+  constructor(private readonly braveApiKey?: string) {}
 
   async fetch(lead: Lead): Promise<PublicCompanyInfo> {
     const url = new URL(lead.website);
@@ -125,21 +125,54 @@ export class LivePublicInfoProvider implements PublicInfoProvider {
       .then((html) => html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").slice(0, 4_000))
       .catch(() => "");
 
-    const search = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(lead.legalName)}`, {
-      headers: { Accept: "application/json", "X-Subscription-Token": this.braveApiKey },
+    const searchResult = this.braveApiKey
+      ? await this.searchBrave(lead.legalName)
+      : await this.searchWikipedia(lead.legalName);
+    const sources = [
+      ...(homepage ? [{ url: lead.website, title: `Sitio oficial de ${lead.legalName}`, snippet: homepage }] : []),
+      ...(searchResult ? [searchResult] : []),
+    ];
+    if (sources.length === 0) throw new PipelineError("public_info_unavailable", "public_info", "No public evidence was available", true);
+    return { summary: sources.map((source) => source.snippet).join(" ").slice(0, 5_000), sources };
+  }
+
+  private async searchBrave(legalName: string): Promise<PublicCompanyInfo["sources"][number] | null> {
+    const search = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(legalName)}`, {
+      headers: { Accept: "application/json", "X-Subscription-Token": this.braveApiKey ?? "" },
       signal: AbortSignal.timeout(5_000),
     }).then((response) => {
       if (!response.ok) throw new Error(`Search provider returned ${response.status}`);
       return response.json() as Promise<{ web?: { results?: Array<{ title: string; url: string; description: string }> } }>;
     });
+    const result = search.web?.results?.[0];
+    return result ? { url: result.url, title: result.title, snippet: result.description } : null;
+  }
 
-    const searchResult = search.web?.results?.[0];
-    const sources = [
-      ...(homepage ? [{ url: lead.website, title: `Sitio oficial de ${lead.legalName}`, snippet: homepage }] : []),
-      ...(searchResult ? [{ url: searchResult.url, title: searchResult.title, snippet: searchResult.description }] : []),
-    ];
-    if (sources.length === 0) throw new PipelineError("public_info_unavailable", "public_info", "No public evidence was available", true);
-    return { summary: sources.map((source) => source.snippet).join(" ").slice(0, 5_000), sources };
+  private async searchWikipedia(legalName: string): Promise<PublicCompanyInfo["sources"][number] | null> {
+    const endpoint = new URL("https://es.wikipedia.org/w/api.php");
+    endpoint.search = new URLSearchParams({
+      action: "query",
+      list: "search",
+      srsearch: legalName,
+      utf8: "1",
+      format: "json",
+      origin: "*",
+    }).toString();
+    const search = await fetch(endpoint, {
+      headers: { Accept: "application/json", "User-Agent": "XepelinGrowthCase/1.0" },
+      signal: AbortSignal.timeout(5_000),
+    }).then((response) => {
+      if (!response.ok) throw new Error(`Wikipedia returned ${response.status}`);
+      return response.json() as Promise<{ query?: { search?: Array<{ title: string; snippet: string }> } }>;
+    });
+    const result = search.query?.search?.[0];
+    if (!result) return null;
+    const slug = encodeURIComponent(result.title.replaceAll(" ", "_"));
+    return {
+      url: `https://es.wikipedia.org/wiki/${slug}`,
+      title: `${result.title} — Wikipedia`,
+      snippet: result.snippet.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+    };
   }
 }
 
