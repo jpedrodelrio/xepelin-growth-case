@@ -16,6 +16,19 @@ Se ejecutó Responses API sobre un único lead sintético, sin proveedor de bús
 
 Evidencia completa: [`docs/evidence/openai-live-proof.json`](evidence/openai-live-proof.json).
 
+## Prueba OpenAI end-to-end en Railway
+
+Batch público: <https://web-production-43317.up.railway.app/batches/5507d0df-9279-41f6-800f-6237c0d5475d>
+
+- Un lead sintético procesado mediante API → BullMQ → worker → OpenAI → PostgreSQL → API → UI.
+- Estado final: `completed`; lead `ai_ready`.
+- Modelo: `gpt-5-mini-2025-08-07`.
+- Response ID: `resp_015ed2ce5048fd97016a5eee46e6a08199881b43ea7a188b5a`.
+- Uso: 854 tokens totales; 192 de reasoning.
+- Latencia AI: 8,670 s.
+- Costo estimado: USD 0,001134.
+- La UI mostró badge `LLM real`, modelo, tokens, latencia, costo y response ID.
+
 ## Servicios públicos
 
 - UI: <https://web-production-43317.up.railway.app>

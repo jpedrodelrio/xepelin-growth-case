@@ -8,6 +8,8 @@
 
 **Qué evitamos:** repositorios genéricos, factories por entidad, command buses y mappers sin una segunda representación útil.
 
+**Fuente de verdad:** `packages/core` contiene Domain/Application y `packages/infrastructure` contiene adaptadores y el único schema Prisma. Se eliminó una implementación de dominio y schema antiguos bajo `apps/api` que estaban excluidos del build; mantenerlos habría creado dos modelos contradictorios.
+
 ## PostgreSQL + Prisma
 
 El workflow necesita consistencia relacional, auditoría y consultas por batch/estado. PostgreSQL permite compare-and-set en transiciones y transacciones para estado + evento. Prisma acelera el MVP con tipos y migraciones legibles.

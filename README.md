@@ -217,10 +217,22 @@ Supuesto: 2.000 tokens de entrada + 250 de salida por empresa.
 ```text
 Entrada: 20M × USD 0,25/M = USD 5
 Salida:  2,5M × USD 2/M = USD 5
-LLM estimado:                 USD 10/mes
+LLM estimado por presupuesto: USD 10/mes
 ```
 
-Búsqueda e infraestructura probablemente dominan el costo. Orden de optimización: cache por contenido/dominio, refrescar sólo registros vencidos, no llamar al LLM sin evidencia, compactar prompt, usar modelos pequeños y Batch API para trabajos no urgentes.
+La ejecución live end-to-end costó USD 0,001134; extrapolarla sin descuentos da USD 11,34 por 10K. Por eso la cifra defendible es **aproximadamente USD 10–11/mes de LLM**. Búsqueda e infraestructura probablemente dominan el costo. Orden de optimización: cache por contenido/dominio, refrescar sólo registros vencidos, no llamar al LLM sin evidencia, compactar prompt, usar modelos pequeños y Batch API para trabajos no urgentes.
+
+### Latencia y capacidad aproximadas a 10K empresas/mes
+
+Dos llamadas live midieron 5,525 s y 8,670 s en la etapa AI. Como dos muestras no permiten declarar un p95, el capacity planning usa **12 s por empresa**: 10 s de AI más 2 s de website, cola y persistencia.
+
+| Escenario | Concurrencia | Tiempo estimado para 10K |
+|---|---:|---:|
+| Un batch grande con 5 runners | 5 | 6,67 h |
+| Dos batches activos en el worker | 10 | 3,33 h |
+| Carga diaria promedio de 334 empresas | 5 | 13,4 min/día |
+
+El cálculo y sus límites están documentados en [docs/AI_CAPACITY.md](docs/AI_CAPACITY.md) y se reproducen con `pnpm estimate:ai-capacity`. El p95 menor a 20 s es un objetivo inicial, no un resultado observado; requiere al menos 100 ejecuciones live instrumentadas.
 
 ## Deploy en Railway
 
@@ -277,8 +289,8 @@ pnpm build
 
 Deliberadamente fuera: RBAC completo, multi-tenancy, deduplicación probabilística global, scraping masivo, reconciliador outbox, tracing distribuido e infraestructura como código. La siguiente mejora técnica sería un transactional outbox para eliminar la ventana entre commit del batch y enqueue del job.
 
-El esfuerzo total superó el objetivo de 4–6 horas porque se añadió hardening de deploy, evidencia de webhook live y QA final. La declaración completa de alcance, uso de Codex y consumo de **0 tokens de LLM en la demo** está en [docs/DELIVERY_NOTES.md](docs/DELIVERY_NOTES.md).
+El esfuerzo total superó el objetivo de 4–6 horas porque se añadió hardening de deploy, evidencia live y QA final. La declaración completa de alcance, uso de Codex y consumo controlado del LLM está en [docs/DELIVERY_NOTES.md](docs/DELIVERY_NOTES.md).
 
 ## Estrategia Growth
 
-El diagnóstico, priorización, experimento y build-vs-buy están documentados en [docs/GROWTH_STRATEGY.md](docs/GROWTH_STRATEGY.md). La presentación final está en [output/slides/xepelin-growth-engineer-case-final.pptx](output/slides/xepelin-growth-engineer-case-final.pptx).
+El diagnóstico, priorización, experimento y build-vs-buy están documentados en [docs/GROWTH_STRATEGY.md](docs/GROWTH_STRATEGY.md). La presentación final, con costo y capacidad a 10K empresas/mes, está en [output/slides/xepelin-growth-engineer-case-final-v2.pptx](output/slides/xepelin-growth-engineer-case-final-v2.pptx).

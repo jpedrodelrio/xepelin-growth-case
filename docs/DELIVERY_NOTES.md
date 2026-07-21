@@ -19,15 +19,15 @@ La decisión fue mantener fuera RBAC completo, multi-tenancy, scraping masivo, d
 
 Se utilizó **Codex** como asistente de implementación, revisión, documentación y QA, tal como permiten las reglas del caso.
 
-La aplicación desplegada usa por defecto:
+La configuración base del repositorio usa providers demo para que la evaluación sea reproducible y no consuma crédito:
 
 ```env
-AI_PROVIDER=demo # cambiar a openai sólo en el worker para la prueba live
+AI_PROVIDER=demo # cambiar a openai sólo en el worker para una prueba live controlada
 PUBLIC_INFO_PROVIDER=demo
 WEBHOOK_PROVIDER=demo
 ```
 
-La validación original y los batches de la demo pública usaron el provider determinístico. Adicionalmente se ejecutó **una prueba controlada real** con OpenAI sobre un solo lead sintético: 761 tokens totales y costo estimado de USD 0,00093225, cubierto por crédito promocional. El comprobante sanitizado está en `docs/evidence/openai-live-proof.json`.
+La validación original y los batches base de la demo pública usaron el provider determinístico. Para demostrar la integración, el worker de Railway se cambió temporalmente a `AI_PROVIDER=openai` y se ejecutaron dos pruebas controladas reales sobre un lead sintético cada una: una local de 761 tokens y otra end-to-end en Railway de 854 tokens. El costo estimado combinado fue USD 0,00206625, cubierto por crédito promocional. El comprobante local sanitizado está en `docs/evidence/openai-live-proof.json` y el batch público está enlazado desde `docs/VALIDATION.md`.
 
 ## Verificación final
 
@@ -37,7 +37,7 @@ Ejecutada el **2026-07-21 UTC**:
 |---|---|
 | `pnpm lint` | Pass |
 | `pnpm typecheck` | Pass |
-| `pnpm test` | Pass: 3 archivos, 7 tests de Domain/Application/Infrastructure |
+| `pnpm test` | Pass: 4 archivos, 9 tests de Domain/Application/Infrastructure |
 | `pnpm build` | Pass: API, worker, web y packages compartidos |
 | Demo desplegada | Pass: 20 leads, 16 `ai_ready`, 4 fallos esperados, batch `completed` |
 | Webhook live | Pass: HTTP 200, un intento, `Idempotency-Key` comprobada |
