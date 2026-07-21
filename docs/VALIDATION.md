@@ -48,6 +48,26 @@ Se ejecutó el escenario `supply-chain-cl` con tres empresas ficticias y `PUBLIC
 
 Los tres scores fueron 75 porque esta ejecución ocurrió antes de desplegar el provider demo sectorial. El nuevo fixture y provider generan evidencia diferenciada para supply chain, logística, construcción, servicios digitales y distribución; debe ejecutarse un batch nuevo después del siguiente deploy para comparar la variación de scores.
 
+## Prueba live con sitio y fuente adicional reales
+
+Batch público: <https://web-production-43317.up.railway.app/batches/31d4bc9b-e34e-4c1e-90e6-24c778109f71>
+
+Se procesó un único lead de prueba con identificador y owner sintéticos, pero con el nombre público `Cencosud S.A.` y su sitio oficial real. `PUBLIC_INFO_PROVIDER=live` quedó activo y, al no existir una key de Brave, usó el fallback gratuito documentado.
+
+- Estado final: `completed`; lead `ai_ready` en un intento.
+- Website checker: `cencosud.com`, disponible.
+- Fuente 1: contenido real de <https://www.cencosud.com>.
+- Fuente 2: resultado real de <https://es.wikipedia.org/wiki/Cencosud>.
+- OpenAI real: `gpt-5-mini-2025-08-07`, response ID `resp_08c3d7eac0ab432b016a5f04f801b8819987ce6ff2cbc219c9`.
+- Uso: 2.181 tokens de entrada, 604 de salida y 2.785 totales.
+- Latencia AI: 6,484 s.
+- Costo estimado: USD 0,00175325.
+- La UI mostró website vivo, evidencia grounded, output comercial y telemetría `LLM real`.
+
+La ejecución también detectó una inconsistencia de calidad útil para el eval: el score fue `8/100`, mientras la justificación describió afinidad alta. El schema rechazaba valores fuera de rango, pero no garantizaba coherencia semántica; este caso queda como fixture candidato para calibrar el prompt y agregar un eval score↔justificación.
+
+Durante esta prueba `WEBHOOK_PROVIDER` estaba accidentalmente en `live` y la URL demo respondió `404`; el intento y el error quedaron persistidos y visibles en el log expandible del frontend. Después se restauró únicamente el webhook a `demo`, manteniendo public info en `live`.
+
 ## Servicios públicos
 
 - UI: <https://web-production-43317.up.railway.app>
