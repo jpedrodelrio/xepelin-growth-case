@@ -29,6 +29,25 @@ Batch público: <https://web-production-43317.up.railway.app/batches/5507d0df-92
 - Costo estimado: USD 0,001134.
 - La UI mostró badge `LLM real`, modelo, tokens, latencia, costo y response ID.
 
+## Batch OpenAI multi-lead con datos sintéticos
+
+Batch público: <https://web-production-43317.up.railway.app/batches/6f12f9a7-8b2c-4a64-a9ea-1386792ffdfc>
+
+Se ejecutó el escenario `supply-chain-cl` con tres empresas ficticias y `PUBLIC_INFO_PROVIDER=demo` para no usar datos ni búsqueda pagada reales.
+
+- Estado final del batch: `completed`.
+- Leads: 3 `ai_ready`, 0 fallidos.
+- Ejecuciones OpenAI reales: 3.
+- Modelo: `gpt-5-mini-2025-08-07`.
+- Consumo total: 2.321 tokens.
+- Costo estimado total: USD 0,00287975.
+- Latencia AI observada: entre 4,791 s y 5,518 s.
+- Cada lead persistió dos fuentes sintéticas, score, justificación, ice-breaker, pain hypothesis, confianza, evidencia y telemetría.
+- Webhook: un intento, status HTTP `200`.
+- La UI mostró los tres estados `ai_ready`, outputs personalizados y badge `LLM real`.
+
+Los tres scores fueron 75 porque esta ejecución ocurrió antes de desplegar el provider demo sectorial. El nuevo fixture y provider generan evidencia diferenciada para supply chain, logística, construcción, servicios digitales y distribución; debe ejecutarse un batch nuevo después del siguiente deploy para comparar la variación de scores.
+
 ## Servicios públicos
 
 - UI: <https://web-production-43317.up.railway.app>

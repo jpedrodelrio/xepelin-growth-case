@@ -1,0 +1,53 @@
+{
+  "scenarios": [
+    {
+      "id": "supply-chain-cl",
+      "description": "Empresas con inventario, proveedores, logística y ciclos de proyecto; debería producir fit medio/alto y dolores diferenciados.",
+      "expected_ai_calls": 3,
+      "payload": {
+        "name": "AI Eval · Supply Chain CL",
+        "segment": "synthetic_supply_chain",
+        "owner_email": "growth.synthetic@xepelin.com",
+        "webhook_url": "https://webhook.site/demo-xepelin-growth",
+        "leads": [
+          { "legal_id": "76.910.001-1", "legal_name": "Distribuidora Acero Norte SpA", "website": "https://acero-norte.example" },
+          { "legal_id": "76.910.002-K", "legal_name": "Transportes Ruta Austral Ltda", "website": "https://ruta-austral.example" },
+          { "legal_id": "76.910.003-8", "legal_name": "Constructora Valle Central SpA", "website": "https://valle-central.example" }
+        ]
+      }
+    },
+    {
+      "id": "services-mx",
+      "description": "Contrasta servicios digitales con distribución médica para observar cómo cambia score, ice-breaker y pain hypothesis.",
+      "expected_ai_calls": 3,
+      "payload": {
+        "name": "AI Eval · Services MX",
+        "segment": "synthetic_services",
+        "owner_email": "growth.synthetic@xepelin.com",
+        "webhook_url": "https://webhook.site/demo-xepelin-growth",
+        "leads": [
+          { "legal_id": "SON260101A11", "legal_name": "Software Operativo Nube SA de CV", "website": "https://software-nube.example" },
+          { "legal_id": "CTH260101B22", "legal_name": "Consultoría Talento Horizonte", "website": "https://talento-horizonte.example" },
+          { "legal_id": "CMB260101C33", "legal_name": "Comercializadora Médica Bajío", "website": "https://medica-bajio.example" }
+        ]
+      }
+    },
+    {
+      "id": "resilience-mixed",
+      "description": "Incluye dos leads válidos, un duplicado y una URL inválida para probar fallos parciales y cierre del batch.",
+      "expected_ai_calls": 2,
+      "payload": {
+        "name": "AI Eval · Resilience Mixed",
+        "segment": "synthetic_quality",
+        "owner_email": "growth.synthetic@xepelin.com",
+        "webhook_url": "https://webhook.site/demo-xepelin-growth",
+        "leads": [
+          { "legal_id": "76.920.001-5", "legal_name": "Alimentos Puerto Sur SpA", "website": "https://alimentos-puerto-sur.example" },
+          { "legal_id": "76.920.001-5", "legal_name": "Alimentos Puerto Sur Duplicado", "website": "https://alimentos-puerto-sur.example" },
+          { "legal_id": "76.920.003-1", "legal_name": "Ingeniería Enlace Inválido SpA", "website": "not-a-url" },
+          { "legal_id": "76.920.004-K", "legal_name": "Maquinaria Industrial Cumbre Ltda", "website": "https://maquinaria-cumbre.example" }
+        ]
+      }
+    }
+  ]
+}

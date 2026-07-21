@@ -166,6 +166,45 @@ PUBLIC_INFO_PROVIDER=demo
 
 Después del deploy debe crearse un batch nuevo: los resultados existentes no se reprocesan ni se etiquetan retroactivamente como OpenAI.
 
+### Batches sintéticos para observar el LLM
+
+`fixtures/llm-evaluation-batches.json` agrega tres escenarios determinísticos:
+
+| Escenario | Leads | Llamadas AI esperadas | Qué permite observar |
+|---|---:|---:|---|
+| `supply-chain-cl` | 3 | 3 | Inventario, logística y construcción |
+| `services-mx` | 3 | 3 | Contraste entre software, consultoría y distribución |
+| `resilience-mixed` | 4 | 2 | Dos válidos, un duplicado y una URL inválida |
+
+El provider público `demo` genera dos fuentes sintéticas diferenciadas por sector: un sitio propio y un directorio B2B adicional. Esto mantiene toda la demo libre de datos reales. El adapter `live` implementa la misma capacidad con HTML del sitio oficial y el primer resultado de Brave Search.
+
+El runner es dry-run por defecto y muestra antes de ejecutar el número máximo de llamadas y su costo estimado:
+
+```bash
+pnpm demo:seed:llm
+```
+
+Para crear sólo el escenario de supply chain y esperar su resultado:
+
+```bash
+API_URL=https://<dominio-api>/api \
+WEB_URL=https://<dominio-web> \
+pnpm demo:seed:llm -- --scenario supply-chain-cl --confirm-create
+```
+
+Para crear los tres escenarios se omite `--scenario`. Son ocho llamadas AI válidas como máximo; usando el costo de la prueba live anterior, el presupuesto esperado es cercano a USD 0,009. El reporte final incluye estados, fuentes, score, justificación, ice-breaker, pain hypothesis, modelo, tokens, latencia, costo y webhook.
+
+### Matriz de cumplimiento del pipeline AI
+
+| Requisito | Implementación |
+|---|---|
+| `ready → ai_enriching` | La máquina de estados y `ProcessLead` hacen ambas transiciones explícitas |
+| Sitio + fuente adicional | `DemoPublicInfoProvider`: dos fuentes sintéticas; `LivePublicInfoProvider`: sitio + Brave Search |
+| Output estructurado | Responses API con Structured Outputs y schema Zod |
+| Persistencia y terminalidad | Output y metadata se guardan antes de `ai_ready`; fallas terminan en `ai_failed` con razón tipada |
+| Vista detalle | Score, justificación, ice-breaker, pain hypothesis, evidencia y telemetría live/demo |
+| Cierre y webhook | El batch espera todos los estados terminales y emite un único evento lógico idempotente |
+
 ### Prompt
 
 El system prompt impone cuatro restricciones:

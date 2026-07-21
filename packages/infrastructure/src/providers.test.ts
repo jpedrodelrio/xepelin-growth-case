@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Lead, PublicCompanyInfo } from "@xepelin/core";
-import { DemoAiEnrichmentProvider, estimateOpenAiCostUsd } from "./providers.js";
+import { DemoAiEnrichmentProvider, DemoPublicInfoProvider, estimateOpenAiCostUsd } from "./providers.js";
 
 const lead: Lead = {
   id: "lead-1",
@@ -28,6 +28,19 @@ const publicInfo: PublicCompanyInfo = {
 };
 
 describe("AI providers", () => {
+  it("builds two differentiated synthetic public sources", async () => {
+    const info = await new DemoPublicInfoProvider().fetch({
+      ...lead,
+      legalName: "Transportes Ruta Austral Ltda",
+    });
+
+    expect(info.sources).toHaveLength(2);
+    expect(info.sources[0]).toMatchObject({ title: "Sitio sintético de Transportes Ruta Austral Ltda" });
+    expect(info.sources[1]).toMatchObject({ title: "Directorio B2B sintético" });
+    expect(info.summary).toContain("flota");
+    expect(info.summary).toContain("combustible");
+  });
+
   it("marks deterministic enrichment as demo execution", async () => {
     const run = await new DemoAiEnrichmentProvider().enrich(lead, publicInfo);
 

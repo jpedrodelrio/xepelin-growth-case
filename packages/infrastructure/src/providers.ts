@@ -57,14 +57,61 @@ export class HttpWebsiteAvailabilityChecker implements WebsiteAvailabilityChecke
 export class DemoPublicInfoProvider implements PublicInfoProvider {
   async fetch(lead: Lead): Promise<PublicCompanyInfo> {
     const domain = lead.domain ?? new URL(lead.website).hostname;
+    const profile = syntheticProfileFor(lead.legalName);
+    const sources = [
+      {
+        url: lead.website,
+        title: `Sitio sintético de ${lead.legalName}`,
+        snippet: profile.officialSiteSignal,
+      },
+      {
+        url: `https://directory.example/companies/${encodeURIComponent(domain)}`,
+        title: "Directorio B2B sintético",
+        snippet: profile.externalSourceSignal,
+      },
+    ];
     return {
-      summary: `${lead.legalName} es una empresa B2B sintética con operación recurrente, relación con proveedores y necesidades potenciales de capital de trabajo.`,
-      sources: [
-        { url: lead.website, title: `Sitio de ${lead.legalName}`, snippet: `Empresa enfocada en servicios y operación B2B. Dominio: ${domain}.` },
-        { url: `https://demo.example/search?q=${encodeURIComponent(lead.legalName)}`, title: "Fuente pública sintética", snippet: "Señales simuladas de compras, facturación y pagos recurrentes para demostrar el pipeline." },
-      ],
+      summary: sources.map((source) => source.snippet).join(" "),
+      sources,
     };
   }
+}
+
+interface SyntheticCompanyProfile {
+  officialSiteSignal: string;
+  externalSourceSignal: string;
+}
+
+function syntheticProfileFor(legalName: string): SyntheticCompanyProfile {
+  const name = legalName.toLocaleLowerCase("es");
+  if (/(transport|logíst|logistic|ruta)/.test(name)) {
+    return {
+      officialSiteSignal: "El sitio describe transporte B2B, coordinación de flota y entregas recurrentes para clientes empresa.",
+      externalSourceSignal: "El directorio la clasifica en logística, con pagos operativos frecuentes a combustible, mantenimiento y transportistas asociados.",
+    };
+  }
+  if (/(constructor|obra|ingenier)/.test(name)) {
+    return {
+      officialSiteSignal: "El sitio presenta proyectos de construcción por etapas y trabajo coordinado con proveedores y subcontratistas.",
+      externalSourceSignal: "El directorio reporta actividad B2B por proyectos, con ciclos distintos entre certificación de avances y pagos operativos.",
+    };
+  }
+  if (/(software|tecnolog|digital|consultor|talento|nube)/.test(name)) {
+    return {
+      officialSiteSignal: "El sitio ofrece servicios B2B por suscripción o proyecto y destaca procesos digitales para sus clientes.",
+      externalSourceSignal: "El directorio la clasifica como servicios profesionales, con baja intensidad de inventario y cobros empresariales recurrentes.",
+    };
+  }
+  if (/(alimento|agro|medic|distribu|comercial|maquin|ferreter|acero)/.test(name)) {
+    return {
+      officialSiteSignal: "El sitio describe venta B2B de productos, abastecimiento de inventario y atención recurrente a clientes empresa.",
+      externalSourceSignal: "El directorio identifica una cadena de suministro con compras a proveedores y capital inmovilizado entre inventario, venta y cobro.",
+    };
+  }
+  return {
+    officialSiteSignal: "El sitio describe una operación B2B recurrente y servicios entregados a otras empresas.",
+    externalSourceSignal: "El directorio confirma actividad empresarial, pero ofrece pocas señales sobre inventario o ciclos de pago.",
+  };
 }
 
 export class LivePublicInfoProvider implements PublicInfoProvider {
