@@ -12,7 +12,8 @@ La implementación prioriza **claridad, capacidad de prueba y velocidad de entre
 - Frontend Next.js protegido por Auth.js, con login demo o Google OAuth.
 - AI-enrichment estructurado y validado con Zod.
 - Providers demo determinísticos para ejecutar los 20 leads sin credenciales.
-- Providers live para homepage + Brave Search + OpenAI Responses API.
+- Providers live para homepage + Brave Search o Wikipedia + OpenAI Responses API.
+- Botón de prueba real protegido por capacidades: sólo se habilita con OpenAI y public info live, webhook demo y presupuesto visible.
 - Protección básica contra SSRF, timeouts e idempotency key del webhook.
 - Tests del dominio y del caso de uso principal.
 
@@ -125,6 +126,8 @@ OPENAI_MODEL=gpt-5-mini-2025-08-07
 # Opcional: si se omite, la segunda fuente usa Wikipedia.
 BRAVE_SEARCH_API_KEY=...
 ```
+
+Para que la UI refleje las capacidades reales, `AI_PROVIDER`, `PUBLIC_INFO_PROVIDER`, `WEBHOOK_PROVIDER` y la presencia opcional de `BRAVE_SEARCH_API_KEY` deben configurarse como variables compartidas entre API y worker. El endpoint de capacidades sólo publica nombres y modos; nunca devuelve valores de credenciales.
 
 El adapter OpenAI usa Responses API + Structured Outputs y vuelve a validar el resultado con Zod. Se usa un snapshot de `gpt-5-mini` para controlar regresiones; el modelo soporta Structured Outputs y su precio publicado es USD 0,25/M tokens de entrada y USD 2/M de salida: <https://developers.openai.com/api/docs/models/gpt-5-mini>.
 

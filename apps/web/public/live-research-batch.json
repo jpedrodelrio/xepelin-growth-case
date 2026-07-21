@@ -1,0 +1,13 @@
+{
+  "name": "Live public research · Cencosud",
+  "segment": "enterprise_retail",
+  "owner_email": "growth.synthetic@xepelin.com",
+  "webhook_url": "https://webhook.site/demo-xepelin-growth",
+  "leads": [
+    {
+      "legal_id": "77.345.679-8",
+      "legal_name": "Cencosud S.A.",
+      "website": "https://www.cencosud.com"
+    }
+  ]
+}

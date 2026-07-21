@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
-import { DemoBatchButton } from "@/components/demo-batch-button";
-import { getBatches } from "@/lib/api";
+import { BatchActions } from "@/components/batch-actions";
+import { getBatches, getProviderCapabilities } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
 export default async function BatchesPage() {
-  const batches = await getBatches();
+  const [batches, capabilities] = await Promise.all([getBatches(), getProviderCapabilities()]);
   return (
     <AppShell>
       <main className="container">
         <div className="headerRow">
           <div><div className="eyebrow">Pipeline pre-enrolamiento</div><h1>Batches de outbound</h1><p className="subtitle">Pipeline asíncrono, observable y tolerante a fallos parciales.</p></div>
-          <DemoBatchButton />
+          <BatchActions capabilities={capabilities} />
         </div>
         <section className="surface tableWrap">
           {batches.length === 0 ? <div className="empty">No hay batches todavía. Ejecuta el payload sintético del caso.</div> : (

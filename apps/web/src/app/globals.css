@@ -28,6 +28,11 @@ h1 { margin: 8px 0 10px; font-size: clamp(30px, 4vw, 44px); letter-spacing: -0.0
 .button { border: 0; background: var(--blue); color: white; border-radius: 10px; padding: 11px 16px; font-weight: 750; cursor: pointer; box-shadow: 0 8px 20px rgba(78,99,255,.18); }
 .button:disabled { opacity: .55; cursor: wait; }
 .buttonSecondary { background: white; color: var(--navy); border: 1px solid var(--line); box-shadow: none; }
+.batchActions { display: grid; gap: 8px; justify-items: end; }
+.batchActionButtons { display: flex; flex-wrap: wrap; gap: 9px; justify-content: flex-end; }
+.providerReadiness { color: var(--muted); font-size: 10px; max-width: 390px; text-align: right; }
+.providerReadiness.ready { color: var(--success); }
+.providerReadiness.blocked { color: var(--warning); }
 .surface { background: white; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 8px 30px rgba(23,32,67,.05); overflow: hidden; }
 .tableWrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 880px; }
@@ -103,6 +108,9 @@ tbody tr:hover { background: #fafbff; }
   .topbar { padding: 0 20px; }
   .container { padding: 28px 18px 60px; }
   .headerRow { align-items: flex-start; flex-direction: column; }
+  .batchActions { justify-items: start; width: 100%; }
+  .batchActionButtons { justify-content: flex-start; }
+  .providerReadiness { text-align: left; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .deliverySummary { align-items: flex-start; flex-direction: column; }
   .webhookLogMetadata { grid-template-columns: 1fr; }

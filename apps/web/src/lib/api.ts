@@ -17,6 +17,12 @@ export interface BatchDetail extends BatchListItem {
   leads: LeadItem[];
   webhookDeliveries: Array<{ id: string; mode: "demo" | "live" | "unknown"; attempt: number; statusCode: number | null; error: string | null; createdAt: string }>;
 }
+export interface ProviderCapabilities {
+  ai: { mode: "demo" | "live"; provider: "demo" | "openai" };
+  publicInfo: { mode: "demo" | "live"; source: "synthetic" | "brave" | "wikipedia" };
+  webhook: { mode: "demo" | "live" };
+  liveResearchReady: boolean;
+}
 
 const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
 
@@ -26,6 +32,21 @@ export async function getBatches(): Promise<BatchListItem[]> {
     if (!response.ok) throw new Error("API unavailable");
     return response.json();
   } catch { return []; }
+}
+
+export async function getProviderCapabilities(): Promise<ProviderCapabilities> {
+  try {
+    const response = await fetch(`${apiUrl}/providers/capabilities`, { cache: "no-store" });
+    if (!response.ok) throw new Error("API unavailable");
+    return response.json();
+  } catch {
+    return {
+      ai: { mode: "demo", provider: "demo" },
+      publicInfo: { mode: "demo", source: "synthetic" },
+      webhook: { mode: "demo" },
+      liveResearchReady: false,
+    };
+  }
 }
 
 export async function getBatch(id: string): Promise<BatchDetail | null> {
