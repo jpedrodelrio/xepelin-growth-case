@@ -22,12 +22,12 @@ Se utilizó **Codex** como asistente de implementación, revisión, documentaci�
 La aplicación desplegada usa por defecto:
 
 ```env
-AI_PROVIDER=demo
+AI_PROVIDER=demo # cambiar a openai sólo en el worker para la prueba live
 PUBLIC_INFO_PROVIDER=demo
 WEBHOOK_PROVIDER=demo
 ```
 
-Por lo tanto, la validación y la demo pública realizaron **0 llamadas a OpenAI y consumieron 0 tokens de LLM**. El adapter live existe y se habilita sólo mediante variables de entorno y credenciales explícitas.
+La validación original y los batches de la demo pública usaron el provider determinístico. Adicionalmente se ejecutó **una prueba controlada real** con OpenAI sobre un solo lead sintético: 761 tokens totales y costo estimado de USD 0,00093225, cubierto por crédito promocional. El comprobante sanitizado está en `docs/evidence/openai-live-proof.json`.
 
 ## Verificación final
 
@@ -37,7 +37,7 @@ Ejecutada el **2026-07-21 UTC**:
 |---|---|
 | `pnpm lint` | Pass |
 | `pnpm typecheck` | Pass |
-| `pnpm test` | Pass: 2 archivos, 5 tests de Domain/Application |
+| `pnpm test` | Pass: 3 archivos, 7 tests de Domain/Application/Infrastructure |
 | `pnpm build` | Pass: API, worker, web y packages compartidos |
 | Demo desplegada | Pass: 20 leads, 16 `ai_ready`, 4 fallos esperados, batch `completed` |
 | Webhook live | Pass: HTTP 200, un intento, `Idempotency-Key` comprobada |

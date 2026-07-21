@@ -3,6 +3,7 @@ import {
   calculateBatchSummary,
   normalizeLegalId,
   type AiEnrichment,
+  type AiEnrichmentRun,
   type Batch,
   type BatchDetail,
   type BatchEvent,
@@ -26,7 +27,26 @@ import {
   type Lead as DbLead,
   type WebhookDelivery as DbWebhookDelivery,
 } from "@prisma/client";
+import { z } from "zod";
 import { prisma } from "./prisma.js";
+
+const aiExecutionSchema = z.object({
+  provider: z.string().min(1),
+  mode: z.enum(["demo", "live"]),
+  model: z.string().min(1).nullable(),
+  responseId: z.string().min(1).nullable(),
+  completedAt: z.string().datetime(),
+  latencyMs: z.number().int().nonnegative(),
+  maxOutputTokens: z.number().int().positive().nullable(),
+  reasoningEffort: z.string().min(1).nullable(),
+  usage: z.object({
+    inputTokens: z.number().int().nonnegative(),
+    outputTokens: z.number().int().nonnegative(),
+    reasoningTokens: z.number().int().nonnegative(),
+    totalTokens: z.number().int().nonnegative(),
+  }).nullable(),
+  estimatedCostUsd: z.number().nonnegative().nullable(),
+});
 
 const batchToDb: Record<CoreBatchStatus, BatchStatus> = {
   pending: BatchStatus.PENDING,
@@ -64,6 +84,7 @@ function mapBatch(row: DbBatch): Batch {
 function mapLead(row: DbLead): Lead {
   const publicInfo = row.publicInfo as PublicCompanyInfo | null;
   const aiEvidence = Array.isArray(row.aiEvidence) ? row.aiEvidence.filter((item): item is string => typeof item === "string") : [];
+  const parsedAiExecution = aiExecutionSchema.safeParse(row.aiExecution);
   return {
     id: row.id,
     batchId: row.batchId,
@@ -93,6 +114,7 @@ function mapLead(row: DbLead): Lead {
           evidence: aiEvidence,
         }
       : null,
+    aiExecution: parsedAiExecution.success ? parsedAiExecution.data : null,
     publicInfo,
     attempts: row.attempts,
     createdAt: row.createdAt,
@@ -246,17 +268,29 @@ export class PrismaRepositories implements BatchRepository, LeadRepository {
     await prisma.lead.update({ where: { id }, data: { publicInfo: value as unknown as Prisma.InputJsonValue } });
   }
 
-  async saveAiEnrichment(id: string, value: AiEnrichment): Promise<void> {
-    await prisma.lead.update({
-      where: { id },
-      data: {
-        prospectFitScore: value.prospectFitScore,
-        fitJustification: value.fitJustification,
-        iceBreaker: value.iceBreaker,
-        painHypothesis: value.painHypothesis,
-        aiConfidence: value.confidence,
-        aiEvidence: value.evidence,
-      },
+  async saveAiEnrichment(id: string, value: AiEnrichmentRun): Promise<void> {
+    await prisma.$transaction(async (tx) => {
+      const lead = await tx.lead.update({
+        where: { id },
+        data: {
+          prospectFitScore: value.enrichment.prospectFitScore,
+          fitJustification: value.enrichment.fitJustification,
+          iceBreaker: value.enrichment.iceBreaker,
+          painHypothesis: value.enrichment.painHypothesis,
+          aiConfidence: value.enrichment.confidence,
+          aiEvidence: value.enrichment.evidence,
+          aiExecution: value.execution as unknown as Prisma.InputJsonValue,
+        },
+        select: { batchId: true },
+      });
+      await tx.batchEvent.create({
+        data: {
+          batchId: lead.batchId,
+          leadId: id,
+          type: "ai_enrichment_completed",
+          metadata: value.execution as unknown as Prisma.InputJsonValue,
+        },
+      });
     });
   }
 

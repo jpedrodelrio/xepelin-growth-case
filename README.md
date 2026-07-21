@@ -127,6 +127,45 @@ BRAVE_SEARCH_API_KEY=...
 
 El adapter OpenAI usa Responses API + Structured Outputs y vuelve a validar el resultado con Zod. Se usa un snapshot de `gpt-5-mini` para controlar regresiones; el modelo soporta Structured Outputs y su precio publicado es USD 0,25/M tokens de entrada y USD 2/M de salida: <https://developers.openai.com/api/docs/models/gpt-5-mini>.
 
+### Evidencia controlada de un LLM real
+
+La suscripción de ChatGPT y la facturación de la API son independientes. Además, `gpt-5-mini` no admite el tier gratuito. Por eso, la prueba real sólo se habilita cuando la cuenta API tiene crédito promocional disponible; de lo contrario no debe ejecutarse.
+
+1. Revisar el saldo en <https://platform.openai.com/settings/organization/billing/overview> y crear una API key de proyecto en <https://platform.openai.com/api-keys>.
+2. Guardar la key únicamente en `.env` y marcar la confirmación local:
+
+```env
+OPENAI_API_KEY=sk-...
+OPENAI_FREE_CREDIT_CONFIRMED=true
+```
+
+3. Inspeccionar el plan sin consumir la API:
+
+```bash
+pnpm proof:openai
+```
+
+4. Ejecutar exactamente un lead, sin búsqueda pagada y con un máximo de 1.200 tokens de salida:
+
+```bash
+pnpm proof:openai -- --confirm-live-call
+```
+
+La ejecución crea `docs/evidence/openai-live-proof.json` con el ID de respuesta, modelo, latencia, tokens, costo estimado y output validado. Nunca escribe la API key. El adaptador usa `store: false`, por lo que OpenAI no conserva la respuesta para recuperarla posteriormente mediante la API.
+
+Los enrichments procesados por el worker también persisten metadata neutral del proveedor (`provider`, modo, modelo, response ID, uso, latencia y costo estimado). El detalle del batch muestra un badge **LLM real** o **Demo** y permite inspeccionar la ejecución. Los batches creados antes de esta migración conservan su output, pero aparecen como `Sin telemetría · batch anterior`.
+
+Para una demo live de bajo costo en Railway, configurar sólo el worker con:
+
+```env
+AI_PROVIDER=openai
+OPENAI_API_KEY=...
+OPENAI_MODEL=gpt-5-mini-2025-08-07
+PUBLIC_INFO_PROVIDER=demo
+```
+
+Después del deploy debe crearse un batch nuevo: los resultados existentes no se reprocesan ni se etiquetan retroactivamente como OpenAI.
+
 ### Prompt
 
 El system prompt impone cuatro restricciones:

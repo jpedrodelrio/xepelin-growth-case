@@ -51,6 +51,23 @@ tbody tr:hover { background: #fafbff; }
 .fitCell { min-width: 190px; max-width: 240px; }
 .score { font-size: 24px; font-weight: 830; color: var(--blue); }
 .fitJustification { color: var(--ink); font-size: 12px; line-height: 1.45; margin-top: 9px; }
+.aiRunCard { border: 1px solid var(--line); border-radius: 10px; margin-top: 12px; padding: 10px; }
+.aiRunCard.live { background: #effaf5; border-color: #bfe8d7; }
+.aiRunCard.demo { background: #f5f6fb; }
+.aiRunHeader { align-items: center; display: flex; font-size: 11px; gap: 7px; text-transform: capitalize; }
+.providerBadge { border-radius: 999px; font-size: 9px; font-weight: 850; letter-spacing: .06em; padding: 4px 7px; text-transform: uppercase; }
+.providerBadge.live { background: #d8f3e7; color: #087553; }
+.providerBadge.demo { background: #e5e8f1; color: #59617a; }
+.aiRunModel { color: var(--muted); font-size: 10px; margin-top: 6px; overflow-wrap: anywhere; }
+.aiRunDetails { border-top: 1px solid rgba(104,112,138,.2); margin-top: 8px; padding-top: 7px; }
+.aiRunDetails summary { color: var(--blue); cursor: pointer; font-size: 10px; font-weight: 750; }
+.aiRunDetails dl { display: grid; gap: 5px; grid-template-columns: 1fr 1fr; margin: 8px 0; }
+.aiRunDetails dl div { min-width: 0; }
+.aiRunDetails dt { color: var(--muted); font-size: 9px; text-transform: uppercase; }
+.aiRunDetails dd { font-size: 10px; font-weight: 700; margin: 2px 0 0; }
+.responseId span { color: var(--muted); display: block; font-size: 9px; text-transform: uppercase; }
+.responseId code { display: block; font-size: 9px; margin-top: 3px; overflow-wrap: anywhere; }
+.aiRunTimestamp, .aiRunLegacy { color: var(--muted); font-size: 9px; margin-top: 7px; }
 .painHypothesis { margin-top: 8px; }
 .evidenceTitle { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .05em; margin-top: 12px; text-transform: uppercase; }
 .evidenceList { color: var(--muted); font-size: 12px; line-height: 1.4; margin: 6px 0 0; padding-left: 18px; }

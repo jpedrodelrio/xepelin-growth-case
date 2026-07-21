@@ -6,7 +6,7 @@ function lead(status: Lead["status"]): Lead {
   return {
     id: crypto.randomUUID(), batchId: "batch", legalId: "1", legalIdNormalized: "1",
     legalName: "Empresa SpA", website: "https://example.com", status, domain: null,
-    normalizedName: null, websiteAlive: null, failure: null, aiEnrichment: null,
+    normalizedName: null, websiteAlive: null, failure: null, aiEnrichment: null, aiExecution: null,
     publicInfo: null, attempts: 0, createdAt: new Date(), updatedAt: new Date(),
   };
 }

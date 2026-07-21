@@ -105,8 +105,8 @@ export class ProcessLead {
       await this.leads.savePublicInfo(leadId, info);
 
       currentStage = "ai";
-      const aiOutput = await this.ai.enrich(enrichedLead, info);
-      await this.leads.saveAiEnrichment(leadId, aiOutput);
+      const aiRun = await this.ai.enrich(enrichedLead, info);
+      await this.leads.saveAiEnrichment(leadId, aiRun);
       await this.leads.transition(leadId, "ai_enriching", "ai_ready");
     } catch (error) {
       const pipelineError = asPipelineError(error, currentStage);

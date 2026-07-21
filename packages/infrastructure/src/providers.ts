@@ -5,7 +5,8 @@ import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import {
   PipelineError,
-  type AiEnrichment,
+  type AiEnrichmentRun,
+  type AiExecutionMetadata,
   type AiEnrichmentProvider,
   type Lead,
   type PublicCompanyInfo,
@@ -96,30 +97,64 @@ export class LivePublicInfoProvider implements PublicInfoProvider {
 }
 
 export class DemoAiEnrichmentProvider implements AiEnrichmentProvider {
-  async enrich(lead: Lead, publicInfo: PublicCompanyInfo): Promise<AiEnrichment> {
+  async enrich(lead: Lead, publicInfo: PublicCompanyInfo): Promise<AiEnrichmentRun> {
     const checksum = [...lead.legalIdNormalized].reduce((total, character) => total + character.charCodeAt(0), 0);
     const score = 60 + (checksum % 31);
     return {
-      prospectFitScore: score,
-      fitJustification: "La evidencia sintética indica operación B2B recurrente y potencial necesidad de administrar liquidez entre cobros y pagos.",
-      iceBreaker: `Vi que ${lead.legalName} trabaja con una operación recurrente de clientes y proveedores. ¿Cómo están gestionando hoy los desfases entre cobros y pagos?`,
-      painHypothesis: "Hipótesis: podría necesitar capital de trabajo o una forma más simple de programar y financiar pagos a proveedores.",
-      confidence: publicInfo.sources.length >= 2 ? "medium" : "low",
-      evidence: publicInfo.sources.map((source) => source.title),
+      enrichment: {
+        prospectFitScore: score,
+        fitJustification: "La evidencia sintética indica operación B2B recurrente y potencial necesidad de administrar liquidez entre cobros y pagos.",
+        iceBreaker: `Vi que ${lead.legalName} trabaja con una operación recurrente de clientes y proveedores. ¿Cómo están gestionando hoy los desfases entre cobros y pagos?`,
+        painHypothesis: "Hipótesis: podría necesitar capital de trabajo o una forma más simple de programar y financiar pagos a proveedores.",
+        confidence: publicInfo.sources.length >= 2 ? "medium" : "low",
+        evidence: publicInfo.sources.map((source) => source.title),
+      },
+      execution: {
+        provider: "demo",
+        mode: "demo",
+        model: "deterministic-fixture-v1",
+        responseId: null,
+        completedAt: new Date().toISOString(),
+        latencyMs: 0,
+        maxOutputTokens: null,
+        reasoningEffort: null,
+        usage: null,
+        estimatedCostUsd: 0,
+      },
     };
   }
+}
+
+export function estimateOpenAiCostUsd(
+  model: string,
+  usage: NonNullable<AiExecutionMetadata["usage"]>,
+): number | null {
+  if (!model.startsWith("gpt-5-mini")) return null;
+  return Number(((usage.inputTokens * 0.25 + usage.outputTokens * 2) / 1_000_000).toFixed(8));
 }
 
 export class OpenAiEnrichmentProvider implements AiEnrichmentProvider {
   private readonly client: OpenAI;
 
-  constructor(apiKey: string, private readonly model: string) {
+  constructor(
+    apiKey: string,
+    private readonly model: string,
+    private readonly maxOutputTokens = 1_200,
+  ) {
     this.client = new OpenAI({ apiKey });
   }
 
-  async enrich(lead: Lead, publicInfo: PublicCompanyInfo): Promise<AiEnrichment> {
+  async enrich(lead: Lead, publicInfo: PublicCompanyInfo): Promise<AiEnrichmentRun> {
+    return this.enrichWithEvidence(lead, publicInfo);
+  }
+
+  async enrichWithEvidence(lead: Lead, publicInfo: PublicCompanyInfo): Promise<AiEnrichmentRun> {
+    const startedAt = performance.now();
     const response = await this.client.responses.parse({
       model: this.model,
+      max_output_tokens: this.maxOutputTokens,
+      reasoning: { effort: "low" },
+      store: false,
       input: [
         {
           role: "system",
@@ -135,13 +170,38 @@ export class OpenAiEnrichmentProvider implements AiEnrichmentProvider {
 
     const parsed = response.output_parsed;
     if (!parsed) throw new PipelineError("invalid_ai_output", "ai", "The model did not return a valid structured output", true);
-    return {
+    const enrichment = {
       prospectFitScore: parsed.prospect_fit_score,
       fitJustification: parsed.fit_justification,
       iceBreaker: parsed.ice_breaker,
       painHypothesis: parsed.pain_hypothesis,
       confidence: parsed.confidence,
       evidence: parsed.evidence,
+    };
+
+    const usage = response.usage
+      ? {
+          inputTokens: response.usage.input_tokens,
+          outputTokens: response.usage.output_tokens,
+          reasoningTokens: response.usage.output_tokens_details.reasoning_tokens,
+          totalTokens: response.usage.total_tokens,
+        }
+      : null;
+
+    return {
+      enrichment,
+      execution: {
+        provider: "openai",
+        mode: "live",
+        responseId: response.id,
+        model: response.model,
+        completedAt: new Date().toISOString(),
+        latencyMs: Math.round(performance.now() - startedAt),
+        maxOutputTokens: this.maxOutputTokens,
+        reasoningEffort: "low",
+        usage,
+        estimatedCostUsd: usage ? estimateOpenAiCostUsd(response.model, usage) : null,
+      },
     };
   }
 }

@@ -1,10 +1,17 @@
 export interface BatchSummary { total: number; ready: number; failed: number; pending: number; readyPercentage: number; failedPercentage: number }
 export interface BatchListItem { id: string; name: string; segment: string; ownerEmail: string; status: string; createdAt: string; summary: BatchSummary }
+export interface AiExecutionMetadata {
+  provider: string; mode: "demo" | "live"; model: string | null; responseId: string | null;
+  completedAt: string; latencyMs: number; maxOutputTokens: number | null; reasoningEffort: string | null;
+  usage: { inputTokens: number; outputTokens: number; reasoningTokens: number; totalTokens: number } | null;
+  estimatedCostUsd: number | null;
+}
 export interface LeadItem {
   id: string; legalId: string; legalName: string; website: string; status: string; domain: string | null;
   normalizedName: string | null; websiteAlive: boolean | null;
   failure: { code: string; stage: string; message: string; retryable: boolean } | null;
   aiEnrichment: { prospectFitScore: number; fitJustification: string; iceBreaker: string; painHypothesis: string; confidence: string; evidence: string[] } | null;
+  aiExecution: AiExecutionMetadata | null;
 }
 export interface BatchDetail extends BatchListItem {
   leads: LeadItem[];

@@ -1,5 +1,5 @@
 import type {
-  AiEnrichment,
+  AiEnrichmentRun,
   Batch,
   BatchDetail,
   BatchEvent,
@@ -41,7 +41,7 @@ export interface LeadRepository {
     value: { domain: string; normalizedName: string; websiteAlive: boolean },
   ): Promise<void>;
   savePublicInfo(id: string, value: PublicCompanyInfo): Promise<void>;
-  saveAiEnrichment(id: string, value: AiEnrichment): Promise<void>;
+  saveAiEnrichment(id: string, value: AiEnrichmentRun): Promise<void>;
   fail(id: string, status: "failed" | "ai_failed", failure: DomainFailure): Promise<void>;
   resetRetryableFailures(batchId: string): Promise<{ retried: string[]; skipped: string[] }>;
 }
@@ -59,7 +59,7 @@ export interface PublicInfoProvider {
 }
 
 export interface AiEnrichmentProvider {
-  enrich(lead: Lead, publicInfo: PublicCompanyInfo): Promise<AiEnrichment>;
+  enrich(lead: Lead, publicInfo: PublicCompanyInfo): Promise<AiEnrichmentRun>;
 }
 
 export interface WebhookSender {

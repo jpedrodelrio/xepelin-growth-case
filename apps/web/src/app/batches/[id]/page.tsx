@@ -2,16 +2,48 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { RetryButton } from "@/components/retry-button";
-import { getBatch, type LeadItem } from "@/lib/api";
+import { getBatch, type AiExecutionMetadata, type LeadItem } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
-function AiFitCell({ enrichment }: { enrichment: NonNullable<LeadItem["aiEnrichment"]> }) {
+function formatCost(value: number | null): string {
+  if (value === null) return "No calculado";
+  if (value === 0) return "USD 0";
+  return `USD ${value.toFixed(6)}`;
+}
+
+function AiExecutionDetails({ execution }: { execution: AiExecutionMetadata | null }) {
+  if (!execution) return <div className="aiRunLegacy">Sin telemetría · batch anterior</div>;
+  const isLive = execution.mode === "live";
+  return (
+    <div className={`aiRunCard ${execution.mode}`}>
+      <div className="aiRunHeader">
+        <span className={`providerBadge ${execution.mode}`}>{isLive ? "LLM real" : "Demo"}</span>
+        <strong>{execution.provider}</strong>
+      </div>
+      <div className="aiRunModel">{execution.model ?? "Modelo no informado"}</div>
+      <details className="aiRunDetails">
+        <summary>Ver ejecución</summary>
+        <dl>
+          <div><dt>Tokens</dt><dd>{execution.usage?.totalTokens ?? "—"}</dd></div>
+          <div><dt>Latencia</dt><dd>{(execution.latencyMs / 1_000).toFixed(2)} s</dd></div>
+          <div><dt>Costo est.</dt><dd>{formatCost(execution.estimatedCostUsd)}</dd></div>
+          <div><dt>Reasoning</dt><dd>{execution.usage?.reasoningTokens ?? "—"}</dd></div>
+        </dl>
+        {execution.responseId && <div className="responseId"><span>Response ID</span><code>{execution.responseId}</code></div>}
+        <div className="aiRunTimestamp">{new Date(execution.completedAt).toLocaleString("es-CL")}</div>
+      </details>
+    </div>
+  );
+}
+
+function AiFitCell({ enrichment, execution }: { enrichment: NonNullable<LeadItem["aiEnrichment"]>; execution: AiExecutionMetadata | null }) {
   return (
     <div className="fitCell">
       <div className="score">{enrichment.prospectFitScore}</div>
       <div className="meta">Confianza {enrichment.confidence}</div>
       <div className="fitJustification">{enrichment.fitJustification}</div>
+      <AiExecutionDetails execution={execution} />
     </div>
   );
 }
@@ -60,7 +92,7 @@ export default async function BatchDetailPage({ params }: { params: Promise<{ id
           <td><div className="nameLink">{lead.legalName}</div><div className="meta">{lead.legalId}</div><div className="meta">{lead.website || "Sin website"}</div></td>
           <td><span className={`badge ${lead.status}`}>{lead.status}</span></td>
           <td><div>{lead.domain ?? "—"}</div><div className="meta">Website: {lead.websiteAlive === null ? "—" : lead.websiteAlive ? "vivo" : "no disponible"}</div></td>
-          <td>{lead.aiEnrichment ? <AiFitCell enrichment={lead.aiEnrichment} /> : "—"}</td>
+          <td>{lead.aiEnrichment ? <AiFitCell enrichment={lead.aiEnrichment} execution={lead.aiExecution} /> : "—"}</td>
           <td><LeadOutcomeCell lead={lead} /></td>
         </tr>)}</tbody></table></section>
       <h2 className="sectionTitle">Entregas del webhook</h2>

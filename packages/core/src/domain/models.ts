@@ -36,6 +36,29 @@ export interface AiEnrichment {
   evidence: string[];
 }
 
+export interface AiExecutionMetadata {
+  provider: string;
+  mode: "demo" | "live";
+  model: string | null;
+  responseId: string | null;
+  completedAt: string;
+  latencyMs: number;
+  maxOutputTokens: number | null;
+  reasoningEffort: string | null;
+  usage: {
+    inputTokens: number;
+    outputTokens: number;
+    reasoningTokens: number;
+    totalTokens: number;
+  } | null;
+  estimatedCostUsd: number | null;
+}
+
+export interface AiEnrichmentRun {
+  enrichment: AiEnrichment;
+  execution: AiExecutionMetadata;
+}
+
 export interface PublicCompanyInfo {
   summary: string;
   sources: Array<{ url: string; title: string; snippet: string }>;
@@ -54,6 +77,7 @@ export interface Lead {
   websiteAlive: boolean | null;
   failure: DomainFailure | null;
   aiEnrichment: AiEnrichment | null;
+  aiExecution: AiExecutionMetadata | null;
   publicInfo: PublicCompanyInfo | null;
   attempts: number;
   createdAt: Date;

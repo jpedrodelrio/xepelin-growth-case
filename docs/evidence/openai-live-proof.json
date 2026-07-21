@@ -1,0 +1,45 @@
+{
+  "proofType": "openai_responses_api_structured_output",
+  "provider": "OpenAI",
+  "executedAt": "2026-07-21T03:32:52.778Z",
+  "billingContext": "user_confirmed_promotional_api_credit",
+  "containsSecrets": false,
+  "input": {
+    "leadId": "proof-openai-live-001",
+    "legalName": "Comercializadora Andes SpA",
+    "evidenceKind": "synthetic_demo_fixture",
+    "publicInfoProvider": "DemoPublicInfoProvider"
+  },
+  "api": {
+    "responseId": "resp_0439c0d70ec416b1016a5ee8602b1c8195a49db41f14f8511a",
+    "model": "gpt-5-mini-2025-08-07",
+    "createdAt": "2026-07-21T03:32:48.000Z",
+    "latencyMs": 5525,
+    "maxOutputTokens": 1200,
+    "reasoningEffort": "low",
+    "usage": {
+      "inputTokens": 337,
+      "outputTokens": 424,
+      "reasoningTokens": 128,
+      "totalTokens": 761
+    },
+    "estimatedUpperBoundUsd": 0.00093225,
+    "pricingAssumptionUsdPerMillionTokens": {
+      "input": 0.25,
+      "output": 2
+    },
+    "pricingSource": "https://developers.openai.com/api/docs/models/gpt-5-mini"
+  },
+  "schemaValidated": true,
+  "output": {
+    "prospectFitScore": 65,
+    "fitJustification": "Comercializadora Andes SpA es una empresa B2B con operación recurrente y relación con proveedores según la evidencia disponible. Ese perfil encaja con necesidades habituales de soluciones de pagos, gestión financiera y capital de trabajo (pagos a proveedores, gestión de cuentas por cobrar/pagar, financiamiento de inventario). La señal es sintética y limitada, por lo que la afinidad es moderada pero relevante para explorar.",
+    "iceBreaker": "Hola — vi que Comercializadora Andes opera de forma recurrente en el canal B2B según su sitio. ¿Cómo gestionan hoy los pagos y el financiamiento del ciclo operativo entre compras y ventas?",
+    "painHypothesis": "Hipótesis: dado que la empresa tiene compras y relaciones recurrentes con proveedores, podría estar buscando optimizar flujo de caja y procesos de pagos para reducir fricciones en la gestión financiera y mejorar su capital de trabajo.",
+    "confidence": "medium",
+    "evidence": [
+      "Sitio de Comercializadora Andes SpA — dominio comercializadoraandes.cl indica operación B2B recurrente.",
+      "Fuente pública sintética — señales simuladas de compras, facturación y pagos recurrentes que sugieren relación con proveedores y posibles necesidades de capital de trabajo."
+    ]
+  }
+}

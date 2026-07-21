@@ -24,6 +24,10 @@ Se dispara un único evento lógico cuando todos los leads están terminales. La
 
 Los dominios del Anexo A son sintéticos y mayoritariamente no resuelven. Fallar 16 enrichments por ese motivo ocultaría el flujo evaluado. El modo demo genera dos fuentes sintéticas etiquetadas; el modo live demuestra la integración real.
 
+## Trazabilidad del enrichment AI
+
+`AiEnrichmentProvider` devuelve un resultado compuesto por output de negocio y metadata neutral de ejecución. El repositorio persiste ambos atómicamente y registra `ai_enrichment_completed`. La metadata usa un campo JSON porque provider, usage y pricing pueden evolucionar sin convertir detalles de OpenAI en columnas del dominio. La UI distingue explícitamente `demo` de `live` y expone modelo, response ID, tokens, latencia y costo estimado.
+
 ## Siguiente evolución
 
 1. Transactional outbox y reconciliador para DB → queue.
