@@ -78,6 +78,54 @@ function WebhookModeBadge({ mode }: { mode: BatchDetail["webhookDeliveries"][num
   return <span className={`providerBadge ${mode}`}>{label}</span>;
 }
 
+function WebhookDeliveryLog({
+  batchId,
+  delivery,
+}: {
+  batchId: string;
+  delivery: BatchDetail["webhookDeliveries"][number];
+}) {
+  const event = delivery.error ? "webhook_delivery_failed" : "webhook_delivery_succeeded";
+  const idempotencyKey = `batch:${batchId}:completed`;
+  const log = {
+    event,
+    timestamp: delivery.createdAt,
+    batchId,
+    deliveryId: delivery.id,
+    mode: delivery.mode,
+    attempt: delivery.attempt,
+    statusCode: delivery.statusCode,
+    error: delivery.error,
+    idempotencyKey,
+  };
+
+  return (
+    <article className={`delivery ${delivery.error ? "failed" : "succeeded"}`}>
+      <div className="deliverySummary">
+        <div className="deliveryInfo">
+          <WebhookModeBadge mode={delivery.mode} />
+          <span>Intento #{delivery.attempt}</span>
+          <span className="deliveryTimestamp">{new Date(delivery.createdAt).toLocaleString("es-CL")}</span>
+        </div>
+        <span className={`deliveryStatus ${delivery.error ? "failed" : "succeeded"}`}>
+          {delivery.statusCode === null ? "Sin respuesta HTTP" : `HTTP ${delivery.statusCode}`}
+        </span>
+      </div>
+      <details className="webhookLogDetails">
+        <summary>Ver log del webhook</summary>
+        <dl className="webhookLogMetadata">
+          <div><dt>Evento</dt><dd>{event}</dd></div>
+          <div><dt>Batch ID</dt><dd><code>{batchId}</code></dd></div>
+          <div><dt>Delivery ID</dt><dd><code>{delivery.id}</code></dd></div>
+          <div><dt>Idempotency-Key</dt><dd><code>{idempotencyKey}</code></dd></div>
+        </dl>
+        {delivery.error && <div className="webhookLogError"><strong>Error:</strong> {delivery.error}</div>}
+        <pre className="webhookLogRaw"><code>{JSON.stringify(log, null, 2)}</code></pre>
+      </details>
+    </article>
+  );
+}
+
 export default async function BatchDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const batch = await getBatch(id);
@@ -101,7 +149,7 @@ export default async function BatchDetailPage({ params }: { params: Promise<{ id
           <td><LeadOutcomeCell lead={lead} /></td>
         </tr>)}</tbody></table></section>
       <h2 className="sectionTitle">Entregas del webhook</h2>
-      <section className="surface deliveries">{batch.webhookDeliveries.length === 0 ? <div className="meta">Aún no hay intentos.</div> : batch.webhookDeliveries.map((delivery) => <div className="delivery" key={delivery.id}><div className="deliveryInfo"><WebhookModeBadge mode={delivery.mode} /><span>Intento #{delivery.attempt} · {new Date(delivery.createdAt).toLocaleString("es-CL")}</span></div><span>{delivery.statusCode ?? delivery.error}</span></div>)}</section>
+      <section className="surface deliveries">{batch.webhookDeliveries.length === 0 ? <div className="meta">Aún no hay intentos.</div> : batch.webhookDeliveries.map((delivery) => <WebhookDeliveryLog batchId={batch.id} delivery={delivery} key={delivery.id} />)}</section>
     </main></AppShell>
   );
 }

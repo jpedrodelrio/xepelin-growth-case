@@ -54,6 +54,7 @@ export class WorkerService implements OnModuleInit, OnModuleDestroy {
             batchId,
             jobId: job.id,
             mode: delivery.mode,
+            idempotencyKey: `batch:${batchId}:completed`,
             attempt: delivery.attempt,
             statusCode: delivery.statusCode,
             error: delivery.error,
