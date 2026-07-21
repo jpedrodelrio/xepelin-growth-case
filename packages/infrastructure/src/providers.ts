@@ -16,8 +16,8 @@ import {
 } from "@xepelin/core";
 
 const aiSchema = z.object({
-  prospect_fit_score: z.number().int().min(0).max(100),
-  fit_justification: z.string().min(10).max(500),
+  prospect_fit_score: z.number().int().min(0).max(100).describe("Entero en escala 0 a 100; 100 = fit ideal con Xepelin"),
+  fit_justification: z.string().min(10).max(700),
   ice_breaker: z.string().min(10).max(500),
   pain_hypothesis: z.string().min(10).max(500),
   confidence: z.enum(["low", "medium", "high"]),
@@ -238,7 +238,7 @@ export class OpenAiEnrichmentProvider implements AiEnrichmentProvider {
       input: [
         {
           role: "system",
-          content: "Eres analista de Growth B2B para Xepelin. Usa exclusivamente la evidencia entregada. No inventes facturación, problemas financieros ni eventos. Redacta en español claro. El pain_hypothesis debe declararse como hipótesis, no como hecho. Evalúa afinidad con pagos, gestión financiera y capital de trabajo.",
+          content: "Eres analista de Growth B2B para Xepelin. Usa exclusivamente la evidencia entregada. No inventes facturación, problemas financieros ni eventos. Redacta en español claro. El pain_hypothesis debe declararse como hipótesis, no como hecho. Evalúa afinidad con pagos, gestión financiera y capital de trabajo. Sé conciso: fit_justification, ice_breaker y pain_hypothesis en 1–2 frases cada uno, sin cortar ideas a mitad. El prospect_fit_score es un entero en escala 0 a 100 (100 = fit ideal), no una nota de 0 a 10.",
         },
         {
           role: "user",
