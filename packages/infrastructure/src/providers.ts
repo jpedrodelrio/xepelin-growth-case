@@ -207,7 +207,7 @@ export class OpenAiEnrichmentProvider implements AiEnrichmentProvider {
 }
 
 export class HttpWebhookSender implements WebhookSender {
-  async send(input: { url: string; idempotencyKey: string; payload: Record<string, unknown> }): Promise<{ statusCode: number }> {
+  async send(input: { url: string; idempotencyKey: string; payload: Record<string, unknown> }): Promise<{ statusCode: number; ok: boolean }> {
     const url = new URL(input.url);
     await assertPublicUrl(url);
     const response = await fetch(url, {
@@ -216,13 +216,12 @@ export class HttpWebhookSender implements WebhookSender {
       body: JSON.stringify(input.payload),
       signal: AbortSignal.timeout(5_000),
     });
-    if (!response.ok) throw new PipelineError("webhook_http_error", "webhook", `Webhook returned ${response.status}`, true);
-    return { statusCode: response.status };
+    return { statusCode: response.status, ok: response.ok };
   }
 }
 
 export class DemoWebhookSender implements WebhookSender {
-  async send(): Promise<{ statusCode: number }> {
-    return { statusCode: 200 };
+  async send(): Promise<{ statusCode: number; ok: boolean }> {
+    return { statusCode: 200, ok: true };
   }
 }

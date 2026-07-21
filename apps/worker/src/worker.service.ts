@@ -47,8 +47,25 @@ export class WorkerService implements OnModuleInit, OnModuleDestroy {
           }
         });
         await Promise.all(runners);
-        await completeBatch.execute(batchId);
-        this.logger.log({ event: "batch_completed", batchId, jobId: job.id });
+        const completion = await completeBatch.execute(batchId);
+        for (const delivery of completion.webhookAttempts) {
+          const context = {
+            event: delivery.error ? "webhook_delivery_failed" : "webhook_delivery_succeeded",
+            batchId,
+            jobId: job.id,
+            attempt: delivery.attempt,
+            statusCode: delivery.statusCode,
+            error: delivery.error,
+          };
+          if (delivery.error) this.logger.warn(context);
+          else this.logger.log(context);
+        }
+        this.logger.log({
+          event: "batch_completed",
+          batchId,
+          jobId: job.id,
+          webhookStatus: completion.webhookStatus,
+        });
       },
       { connection: createRedisConnection(), concurrency: 2 },
     );

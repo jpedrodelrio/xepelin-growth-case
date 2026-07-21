@@ -129,17 +129,23 @@ export class CompleteBatch {
     private readonly leads: LeadRepository,
     private readonly webhook: WebhookSender,
     private readonly webUrl: string,
+    private readonly wait: (delayMs: number) => Promise<void> = (delayMs) =>
+      new Promise((resolve) => setTimeout(resolve, delayMs)),
   ) {}
 
-  async execute(batchId: string): Promise<void> {
+  async execute(batchId: string): Promise<CompleteBatchResult> {
     const batch = await this.batches.getBatch(batchId);
     if (!batch) throw new PipelineError("batch_not_found", "worker", "Batch not found", false);
 
     const leads = await this.leads.listByBatch(batchId);
-    if (!leads.every((lead) => terminalLeadStatuses.has(lead.status))) return;
+    if (!leads.every((lead) => terminalLeadStatuses.has(lead.status))) {
+      return { completed: false, webhookStatus: "not_due", webhookAttempts: [] };
+    }
 
-    await this.batches.setStatus(batchId, "completed");
-    if (batch.webhookSentAt) return;
+    if (batch.status !== "completed") await this.batches.setStatus(batchId, "completed");
+    if (batch.webhookSentAt) {
+      return { completed: true, webhookStatus: "already_sent", webhookAttempts: [] };
+    }
 
     const summary = calculateBatchSummary(leads);
     const payload = {
@@ -148,6 +154,7 @@ export class CompleteBatch {
       summary: { total: summary.total, ready: summary.ready, failed: summary.failed },
       link_to_detail: `${this.webUrl}/batches/${batch.id}`,
     };
+    const webhookAttempts: WebhookAttemptResult[] = [];
 
     for (let attempt = 1; attempt <= 3; attempt += 1) {
       try {
@@ -156,25 +163,51 @@ export class CompleteBatch {
           idempotencyKey: `batch:${batch.id}:completed`,
           payload,
         });
+        const error = result.ok ? null : `Webhook returned ${result.statusCode}`;
         await this.batches.recordWebhookDelivery({
           batchId,
           attempt,
           statusCode: result.statusCode,
-          error: null,
+          error,
         });
-        await this.batches.markWebhookSent(batchId, new Date());
-        return;
+        webhookAttempts.push({ attempt, statusCode: result.statusCode, error });
+        if (result.ok) {
+          await this.batches.markWebhookSent(batchId, new Date());
+          return { completed: true, webhookStatus: "delivered", webhookAttempts };
+        }
+        if (!isRetryableWebhookStatus(result.statusCode)) break;
       } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown webhook error";
         await this.batches.recordWebhookDelivery({
           batchId,
           attempt,
           statusCode: null,
-          error: error instanceof Error ? error.message : "Unknown webhook error",
+          error: message,
         });
-        if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 250));
+        webhookAttempts.push({ attempt, statusCode: null, error: message });
+        if (error instanceof PipelineError && !error.failure.retryable) break;
       }
+      if (attempt < 3) await this.wait(attempt * 250);
     }
+
+    return { completed: true, webhookStatus: "failed", webhookAttempts };
   }
+}
+
+export interface WebhookAttemptResult {
+  attempt: number;
+  statusCode: number | null;
+  error: string | null;
+}
+
+export interface CompleteBatchResult {
+  completed: boolean;
+  webhookStatus: "not_due" | "already_sent" | "delivered" | "failed";
+  webhookAttempts: WebhookAttemptResult[];
+}
+
+function isRetryableWebhookStatus(statusCode: number): boolean {
+  return statusCode === 408 || statusCode === 429 || statusCode >= 500;
 }
 
 export class RetryFailedLeads {

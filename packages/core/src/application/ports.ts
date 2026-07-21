@@ -67,5 +67,5 @@ export interface WebhookSender {
     url: string;
     idempotencyKey: string;
     payload: Record<string, unknown>;
-  }): Promise<{ statusCode: number }>;
+  }): Promise<{ statusCode: number; ok: boolean }>;
 }

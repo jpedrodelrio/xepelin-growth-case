@@ -37,7 +37,7 @@ Ejecutada el **2026-07-21 UTC**:
 |---|---|
 | `pnpm lint` | Pass |
 | `pnpm typecheck` | Pass |
-| `pnpm test` | Pass: 4 archivos, 9 tests de Domain/Application/Infrastructure |
+| `pnpm test` | Pass: 5 archivos, 13 tests de Domain/Application/Infrastructure |
 | `pnpm build` | Pass: API, worker, web y packages compartidos |
 | Demo desplegada | Pass: 20 leads, 16 `ai_ready`, 4 fallos esperados, batch `completed` |
 | Webhook live | Pass: HTTP 200, un intento, `Idempotency-Key` comprobada |
