@@ -48,7 +48,12 @@ tbody tr:hover { background: #fafbff; }
 .statValue { font-size: 30px; font-weight: 820; margin-top: 6px; letter-spacing: -.04em; }
 .back { color: var(--blue); font-weight: 700; font-size: 14px; }
 .aiText { max-width: 360px; line-height: 1.45; }
+.fitCell { min-width: 190px; max-width: 240px; }
 .score { font-size: 24px; font-weight: 830; color: var(--blue); }
+.fitJustification { color: var(--ink); font-size: 12px; line-height: 1.45; margin-top: 9px; }
+.painHypothesis { margin-top: 8px; }
+.evidenceTitle { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .05em; margin-top: 12px; text-transform: uppercase; }
+.evidenceList { color: var(--muted); font-size: 12px; line-height: 1.4; margin: 6px 0 0; padding-left: 18px; }
 .error { color: var(--danger); max-width: 250px; line-height: 1.4; }
 .empty { padding: 64px 24px; text-align: center; color: var(--muted); }
 .login { min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at 80% 20%, #e1e5ff, transparent 34%), var(--navy); }
