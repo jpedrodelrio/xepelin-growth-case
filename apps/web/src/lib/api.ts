@@ -15,7 +15,7 @@ export interface LeadItem {
 }
 export interface BatchDetail extends BatchListItem {
   leads: LeadItem[];
-  webhookDeliveries: Array<{ id: string; attempt: number; statusCode: number | null; error: string | null; createdAt: string }>;
+  webhookDeliveries: Array<{ id: string; mode: "demo" | "live" | "unknown"; attempt: number; statusCode: number | null; error: string | null; createdAt: string }>;
 }
 
 const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";

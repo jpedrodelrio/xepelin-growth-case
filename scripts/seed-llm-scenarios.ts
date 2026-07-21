@@ -42,6 +42,7 @@ interface BatchDetail {
     } | null;
   }>;
   webhookDeliveries: Array<{
+    mode: "demo" | "live" | "unknown";
     attempt: number;
     statusCode: number | null;
     error: string | null;

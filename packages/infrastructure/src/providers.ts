@@ -254,6 +254,8 @@ export class OpenAiEnrichmentProvider implements AiEnrichmentProvider {
 }
 
 export class HttpWebhookSender implements WebhookSender {
+  readonly mode = "live" as const;
+
   async send(input: { url: string; idempotencyKey: string; payload: Record<string, unknown> }): Promise<{ statusCode: number; ok: boolean }> {
     const url = new URL(input.url);
     await assertPublicUrl(url);
@@ -268,6 +270,8 @@ export class HttpWebhookSender implements WebhookSender {
 }
 
 export class DemoWebhookSender implements WebhookSender {
+  readonly mode = "demo" as const;
+
   async send(): Promise<{ statusCode: number; ok: boolean }> {
     return { statusCode: 200, ok: true };
   }

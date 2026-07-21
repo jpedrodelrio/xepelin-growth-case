@@ -166,11 +166,12 @@ export class CompleteBatch {
         const error = result.ok ? null : `Webhook returned ${result.statusCode}`;
         await this.batches.recordWebhookDelivery({
           batchId,
+          mode: this.webhook.mode,
           attempt,
           statusCode: result.statusCode,
           error,
         });
-        webhookAttempts.push({ attempt, statusCode: result.statusCode, error });
+        webhookAttempts.push({ mode: this.webhook.mode, attempt, statusCode: result.statusCode, error });
         if (result.ok) {
           await this.batches.markWebhookSent(batchId, new Date());
           return { completed: true, webhookStatus: "delivered", webhookAttempts };
@@ -180,11 +181,12 @@ export class CompleteBatch {
         const message = error instanceof Error ? error.message : "Unknown webhook error";
         await this.batches.recordWebhookDelivery({
           batchId,
+          mode: this.webhook.mode,
           attempt,
           statusCode: null,
           error: message,
         });
-        webhookAttempts.push({ attempt, statusCode: null, error: message });
+        webhookAttempts.push({ mode: this.webhook.mode, attempt, statusCode: null, error: message });
         if (error instanceof PipelineError && !error.failure.retryable) break;
       }
       if (attempt < 3) await this.wait(attempt * 250);
@@ -195,6 +197,7 @@ export class CompleteBatch {
 }
 
 export interface WebhookAttemptResult {
+  mode: "demo" | "live";
   attempt: number;
   statusCode: number | null;
   error: string | null;

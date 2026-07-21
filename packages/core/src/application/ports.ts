@@ -63,6 +63,7 @@ export interface AiEnrichmentProvider {
 }
 
 export interface WebhookSender {
+  readonly mode: "demo" | "live";
   send(input: {
     url: string;
     idempotencyKey: string;

@@ -20,7 +20,7 @@ El worker debe sobrevivir reinicios y aplicar retry/backoff. Una cola in-memory 
 
 ## Webhook
 
-Se dispara un único evento lógico cuando todos los leads están terminales. La entrega es at-least-once: hasta tres requests comparten idempotency key. `webhookSentAt` evita nuevos eventos lógicos, incluso después de retry-failed. Cada respuesta HTTP se persiste con su status real; timeouts y errores de red quedan con status nulo y error seguro. Se reintentan `408`, `429`, `5xx` y fallas de red, mientras otros `4xx` terminan inmediatamente. El worker emite un log estructurado por intento y el detalle del batch consulta la misma auditoría persistida.
+Se dispara un único evento lógico cuando todos los leads están terminales. La entrega es at-least-once: hasta tres requests comparten idempotency key. `webhookSentAt` evita nuevos eventos lógicos, incluso después de retry-failed. Cada respuesta HTTP se persiste con su status real y modo `live` o `demo`; timeouts y errores de red quedan con status nulo y error seguro. Las filas anteriores a esta telemetría usan `unknown` para no atribuirles un modo falso. Se reintentan `408`, `429`, `5xx` y fallas de red, mientras otros `4xx` terminan inmediatamente. El worker emite un log estructurado por intento y el detalle del batch consulta la misma auditoría persistida.
 
 ## Providers demo
 

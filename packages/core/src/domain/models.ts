@@ -129,6 +129,7 @@ export interface BatchEvent {
 export interface WebhookDelivery {
   id: string;
   batchId: string;
+  mode: "demo" | "live" | "unknown";
   attempt: number;
   statusCode: number | null;
   error: string | null;

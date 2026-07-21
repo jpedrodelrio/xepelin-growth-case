@@ -136,7 +136,8 @@ function mapEvent(row: DbBatchEvent): BatchEvent {
 }
 
 function mapDelivery(row: DbWebhookDelivery): WebhookDelivery {
-  return { ...row };
+  const mode = row.mode === "demo" || row.mode === "live" ? row.mode : "unknown";
+  return { ...row, mode };
 }
 
 export class PrismaRepositories implements BatchRepository, LeadRepository {

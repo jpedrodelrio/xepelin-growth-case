@@ -58,6 +58,7 @@ tbody tr:hover { background: #fafbff; }
 .providerBadge { border-radius: 999px; font-size: 9px; font-weight: 850; letter-spacing: .06em; padding: 4px 7px; text-transform: uppercase; }
 .providerBadge.live { background: #d8f3e7; color: #087553; }
 .providerBadge.demo { background: #e5e8f1; color: #59617a; }
+.providerBadge.unknown { background: #fff1cc; color: #8a5a00; }
 .aiRunModel { color: var(--muted); font-size: 10px; margin-top: 6px; overflow-wrap: anywhere; }
 .aiRunDetails { border-top: 1px solid rgba(104,112,138,.2); margin-top: 8px; padding-top: 7px; }
 .aiRunDetails summary { color: var(--blue); cursor: pointer; font-size: 10px; font-weight: 750; }
@@ -82,6 +83,7 @@ tbody tr:hover { background: #fafbff; }
 .sectionTitle { margin: 34px 0 14px; font-size: 21px; }
 .deliveries { display: grid; gap: 8px; padding: 18px; }
 .delivery { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.deliveryInfo { align-items: center; display: flex; flex-wrap: wrap; gap: 9px; }
 
 @media (max-width: 760px) {
   .topbar { padding: 0 20px; }

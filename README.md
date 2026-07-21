@@ -231,7 +231,7 @@ Output obligatorio:
 
 - Jobs BullMQ: tres intentos con backoff exponencial.
 - Cada lead falla de forma independiente; no aborta el batch.
-- Webhook: un evento lógico, hasta tres intentos e `Idempotency-Key: batch:<id>:completed`. Cada intento registra fecha, status HTTP o error en PostgreSQL, se emite como log estructurado del worker y aparece en el detalle del batch.
+- Webhook: un evento lógico, hasta tres intentos e `Idempotency-Key: batch:<id>:completed`. Cada intento registra fecha, status HTTP o error y modo `live`/`demo` en PostgreSQL, se emite como log estructurado del worker y aparece con badge **Webhook real**, **Demo** o **Sin telemetría** en el detalle del batch.
 - URLs HTTP(S) solamente, bloqueo de localhost/redes privadas y timeout.
 - No se envían datos personales ni secretos al prompt.
 - Logs estructurados por batch/job/lead en los límites de entrada.

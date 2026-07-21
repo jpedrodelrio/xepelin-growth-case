@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { RetryButton } from "@/components/retry-button";
-import { getBatch, type AiExecutionMetadata, type LeadItem } from "@/lib/api";
+import { getBatch, type AiExecutionMetadata, type BatchDetail, type LeadItem } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -73,6 +73,11 @@ function LeadOutcomeCell({ lead }: { lead: LeadItem }) {
   );
 }
 
+function WebhookModeBadge({ mode }: { mode: BatchDetail["webhookDeliveries"][number]["mode"] }) {
+  const label = mode === "live" ? "Webhook real" : mode === "demo" ? "Demo" : "Sin telemetría";
+  return <span className={`providerBadge ${mode}`}>{label}</span>;
+}
+
 export default async function BatchDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const batch = await getBatch(id);
@@ -96,7 +101,7 @@ export default async function BatchDetailPage({ params }: { params: Promise<{ id
           <td><LeadOutcomeCell lead={lead} /></td>
         </tr>)}</tbody></table></section>
       <h2 className="sectionTitle">Entregas del webhook</h2>
-      <section className="surface deliveries">{batch.webhookDeliveries.length === 0 ? <div className="meta">Aún no hay intentos.</div> : batch.webhookDeliveries.map((delivery) => <div className="delivery" key={delivery.id}><span>Intento #{delivery.attempt} · {new Date(delivery.createdAt).toLocaleString("es-CL")}</span><span>{delivery.statusCode ?? delivery.error}</span></div>)}</section>
+      <section className="surface deliveries">{batch.webhookDeliveries.length === 0 ? <div className="meta">Aún no hay intentos.</div> : batch.webhookDeliveries.map((delivery) => <div className="delivery" key={delivery.id}><div className="deliveryInfo"><WebhookModeBadge mode={delivery.mode} /><span>Intento #{delivery.attempt} · {new Date(delivery.createdAt).toLocaleString("es-CL")}</span></div><span>{delivery.statusCode ?? delivery.error}</span></div>)}</section>
     </main></AppShell>
   );
 }

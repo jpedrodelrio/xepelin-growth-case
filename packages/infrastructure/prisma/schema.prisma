@@ -92,6 +92,7 @@ model BatchEvent {
 model WebhookDelivery {
   id          String   @id @default(uuid())
   batchId     String
+  mode        String   @default("unknown")
   attempt     Int
   statusCode  Int?
   error       String?

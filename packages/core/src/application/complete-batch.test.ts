@@ -95,6 +95,7 @@ describe("CompleteBatch", () => {
     ]);
     let sendCalls = 0;
     const webhook: WebhookSender = {
+      mode: "demo",
       send: async () => {
         sendCalls += 1;
         return { statusCode: 200, ok: true };
@@ -115,6 +116,7 @@ describe("CompleteBatch", () => {
     ]);
     const requests: Parameters<WebhookSender["send"]>[0][] = [];
     const webhook: WebhookSender = {
+      mode: "live",
       send: async (input) => {
         requests.push(input);
         return { statusCode: 200, ok: true };
@@ -136,6 +138,7 @@ describe("CompleteBatch", () => {
     }]);
     expect(repositories.deliveries).toEqual([{
       batchId: "batch-1",
+      mode: "live",
       attempt: 1,
       statusCode: 200,
       error: null,
@@ -151,6 +154,7 @@ describe("CompleteBatch", () => {
       { statusCode: 202, ok: true },
     ];
     const webhook: WebhookSender = {
+      mode: "live",
       send: async (input) => {
         keys.push(input.idempotencyKey);
         return responses.shift() ?? { statusCode: 500, ok: false };
@@ -168,8 +172,8 @@ describe("CompleteBatch", () => {
     expect(result.webhookStatus).toBe("delivered");
     expect(keys).toEqual(["batch:batch-1:completed", "batch:batch-1:completed"]);
     expect(repositories.deliveries).toEqual([
-      { batchId: "batch-1", attempt: 1, statusCode: 500, error: "Webhook returned 500" },
-      { batchId: "batch-1", attempt: 2, statusCode: 202, error: null },
+      { batchId: "batch-1", mode: "live", attempt: 1, statusCode: 500, error: "Webhook returned 500" },
+      { batchId: "batch-1", mode: "live", attempt: 2, statusCode: 202, error: null },
     ]);
   });
 
@@ -180,6 +184,7 @@ describe("CompleteBatch", () => {
     );
     let sendCalls = 0;
     const webhook: WebhookSender = {
+      mode: "demo",
       send: async () => {
         sendCalls += 1;
         return { statusCode: 200, ok: true };

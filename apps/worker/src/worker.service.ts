@@ -53,6 +53,7 @@ export class WorkerService implements OnModuleInit, OnModuleDestroy {
             event: delivery.error ? "webhook_delivery_failed" : "webhook_delivery_succeeded",
             batchId,
             jobId: job.id,
+            mode: delivery.mode,
             attempt: delivery.attempt,
             statusCode: delivery.statusCode,
             error: delivery.error,
