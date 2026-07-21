@@ -67,22 +67,28 @@ Batch `ad858e85-f657-452c-a3ba-9f331ef7991e` creado desde la UI pública:
 
 ## Webhook HTTP real
 
-Se activó temporalmente `WEBHOOK_PROVIDER=live` sólo en el worker y se creó el batch sintético `ee4cc98f-44f1-4dc7-b7db-78c0fd217085`.
+Prueba pública más reciente: <https://web-production-43317.up.railway.app/batches/24e34f6e-467a-422e-b175-b14b0359d95b>
+
+Se activó temporalmente `WEBHOOK_PROVIDER=live` sólo en el worker y se creó un batch sintético de un lead para minimizar el consumo del LLM.
 
 Resultado persistido por la aplicación:
 
 - Estado final: `completed`.
-- `webhookSentAt`: `2026-07-21T02:33:51.503Z`.
-- Delivery `bcd39714-6b1c-41c1-bd1a-5fc0fd0d1b45`.
+- Lead terminal: `ai_ready`.
+- OpenAI: 796 tokens, 3,884 s de latencia y costo estimado de USD 0,00100225.
+- `webhookSentAt`: `2026-07-21T05:04:25.086Z`.
+- Delivery `a7786be2-152c-4835-ab0d-701ca4eec6ef`.
+- Modo persistido: `live`.
 - Intento: 1.
 - Status HTTP: `200`.
 - Error: `null`.
+- La UI mostró el badge **Webhook real**, intento, fecha y status.
 
-El inspector temporal de Webhook.site registró la request `5257846c-7801-4251-809a-396891a3bb8a` con:
+El inspector temporal de Webhook.site registró la request `39eb735f-1a36-4679-802a-12d686d0a1b8` con:
 
 - Método `POST`.
-- Payload con `batch_id`, nombre, resumen y `link_to_detail` público.
-- Header `Idempotency-Key: batch:ee4cc98f-44f1-4dc7-b7db-78c0fd217085:completed`.
+- Payload `{ batch_id, name, summary: { total: 1, ready: 1, failed: 0 }, link_to_detail }`.
+- Header `Idempotency-Key: batch:24e34f6e-467a-422e-b175-b14b0359d95b:completed`.
 - Un único request recibido.
 
-Después de la prueba, el worker se restauró a `WEBHOOK_PROVIDER=demo` para evitar tráfico externo durante la entrevista. La URL del inspector expira, por lo que los IDs y el resultado persistido quedan documentados aquí como evidencia estable.
+Después de verificar el POST, Railway desplegó nuevamente el worker con `WEBHOOK_PROVIDER=demo` y quedó en estado `Active`, evitando tráfico externo durante la entrevista. La URL del inspector expira, por lo que los IDs y el resultado persistido quedan documentados aquí como evidencia estable.
