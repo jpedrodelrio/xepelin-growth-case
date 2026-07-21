@@ -1,0 +1,28 @@
+{
+  "name": "Outbound MX - Batch demo Q1",
+  "segment": "pyme_servicios",
+  "owner_email": "sdr.demo@xepelin.com",
+  "webhook_url": "https://webhook.site/demo-xepelin-growth",
+  "leads": [
+    { "legal_id": "76.123.456-7", "legal_name": "Comercializadora Andes SpA", "website": "https://comercializadoraandes.cl" },
+    { "legal_id": "MAGE920101AB1", "legal_name": "Manufacturas Aguila SA de CV", "website": "https://manufacturasaguila.mx" },
+    { "legal_id": "77.987.654-3", "legal_name": "Servicios Logisticos del Sur Ltda", "website": "https://logisticadelsur.cl" },
+    { "legal_id": "TINP880515XY2", "legal_name": "Tecnologia Integral del Norte", "website": "http://tinorte.com.mx" },
+    { "legal_id": "76.555.111-9", "legal_name": "Importadora Pacifico SA", "website": "https://importadorapacifico.cl" },
+    { "legal_id": "GRTE010203QW3", "legal_name": "Grupo Textil del Este", "website": "https://grupotextileste.mx" },
+    { "legal_id": "77.444.222-K", "legal_name": "Constructora Cordillera SpA", "website": "not-a-valid-url" },
+    { "legal_id": "AGME950707RT4", "legal_name": "Agroexportadora Mediterraneo", "website": "https://agromediterraneo.mx" },
+    { "legal_id": "76.123.456-7", "legal_name": "Comercializadora Andes SpA", "website": "https://comercializadoraandes.cl" },
+    { "legal_id": "78.111.000-2", "legal_name": "Distribuidora Central Ltda", "website": "https://distcentral.cl" },
+    { "legal_id": "FAQM900909LM5", "legal_name": "Fabrica de Alimentos Quetzal", "website": "https://alimentosquetzal.mx" },
+    { "legal_id": "76.222.333-4", "legal_name": "Soluciones Digitales Austral", "website": "https://digitalaustral.cl" },
+    { "legal_id": "PLNE870404ZX6", "legal_name": "Plasticos del Noreste SA", "website": "https://plasticosnoreste.mx" },
+    { "legal_id": "77.888.999-1", "legal_name": "Transportes Bio Bio SpA", "website": "https://transportesbiobio.cl" },
+    { "legal_id": "COVE020606BN7", "legal_name": "Comercio Verde SA de CV", "website": "" },
+    { "legal_id": "76.333.444-5", "legal_name": "Maquinarias del Valle Ltda", "website": "https://maqvalle.cl" },
+    { "legal_id": "MAGE920101AB1", "legal_name": "Manufacturas Aguila SA de CV", "website": "https://manufacturasaguila.mx" },
+    { "legal_id": "78.222.111-3", "legal_name": "Asesorias Financieras Lican", "website": "https://aflican.cl" },
+    { "legal_id": "QUSE110811GH8", "legal_name": "Quimica del Sureste", "website": "https://quimicasureste.mx" },
+    { "legal_id": "76.444.555-6", "legal_name": "Ferreteria Industrial Maipo", "website": "https://ferremaipo.cl" }
+  ]
+}

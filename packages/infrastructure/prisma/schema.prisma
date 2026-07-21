@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BatchStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum LeadStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+  AI_ENRICHING
+  AI_READY
+  AI_FAILED
+}
+
+model Batch {
+  id             String   @id @default(uuid())
+  name           String
+  segment        String
+  ownerEmail     String
+  webhookUrl     String
+  status         BatchStatus @default(PENDING)
+  webhookSentAt  DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  leads          Lead[]
+  events         BatchEvent[]
+  deliveries     WebhookDelivery[]
+
+  @@index([createdAt])
+}
+
+model Lead {
+  id                    String   @id @default(uuid())
+  batchId               String
+  legalId               String
+  legalIdNormalized     String
+  legalName             String
+  website               String
+  status                 LeadStatus @default(PENDING)
+  domain                 String?
+  normalizedName         String?
+  websiteAlive           Boolean?
+  errorCode              String?
+  errorStage             String?
+  errorReason            String?
+  errorRetryable         Boolean?
+  publicInfo             Json?
+  prospectFitScore       Int?
+  fitJustification       String?
+  iceBreaker             String?
+  painHypothesis         String?
+  aiConfidence           String?
+  aiEvidence             Json?
+  attempts               Int @default(0)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  batch                  Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  events                 BatchEvent[]
+
+  @@index([batchId, legalIdNormalized])
+  @@index([batchId, status])
+}
+
+model BatchEvent {
+  id          String   @id @default(uuid())
+  batchId     String
+  leadId      String?
+  type        String
+  fromStatus  String?
+  toStatus    String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  batch       Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  lead        Lead? @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([batchId, createdAt])
+}
+
+model WebhookDelivery {
+  id          String   @id @default(uuid())
+  batchId     String
+  attempt     Int
+  statusCode  Int?
+  error       String?
+  createdAt   DateTime @default(now())
+  batch       Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId, createdAt])
+}

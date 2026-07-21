@@ -1,0 +1,30 @@
+export interface BatchSummary { total: number; ready: number; failed: number; pending: number; readyPercentage: number; failedPercentage: number }
+export interface BatchListItem { id: string; name: string; segment: string; ownerEmail: string; status: string; createdAt: string; summary: BatchSummary }
+export interface LeadItem {
+  id: string; legalId: string; legalName: string; website: string; status: string; domain: string | null;
+  normalizedName: string | null; websiteAlive: boolean | null;
+  failure: { code: string; stage: string; message: string; retryable: boolean } | null;
+  aiEnrichment: { prospectFitScore: number; fitJustification: string; iceBreaker: string; painHypothesis: string; confidence: string; evidence: string[] } | null;
+}
+export interface BatchDetail extends BatchListItem {
+  leads: LeadItem[];
+  webhookDeliveries: Array<{ id: string; attempt: number; statusCode: number | null; error: string | null; createdAt: string }>;
+}
+
+const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
+
+export async function getBatches(): Promise<BatchListItem[]> {
+  try {
+    const response = await fetch(`${apiUrl}/batches`, { cache: "no-store" });
+    if (!response.ok) throw new Error("API unavailable");
+    return response.json();
+  } catch { return []; }
+}
+
+export async function getBatch(id: string): Promise<BatchDetail | null> {
+  try {
+    const response = await fetch(`${apiUrl}/batches/${id}`, { cache: "no-store" });
+    if (!response.ok) return null;
+    return response.json();
+  } catch { return null; }
+}

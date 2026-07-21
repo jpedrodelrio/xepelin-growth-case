@@ -1,0 +1,25 @@
+{
+  "name": "@xepelin/web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "PORT=3000 node --env-file=../../.env ./node_modules/next/dist/bin/next dev --port 3000",
+    "build": "node --env-file=../../.env ./node_modules/next/dist/bin/next build",
+    "start": "PORT=3000 node --env-file=../../.env ./node_modules/next/dist/bin/next start --port 3000",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "echo 'UI covered by build and manual smoke test'"
+  },
+  "dependencies": {
+    "next": "^15.2.2",
+    "next-auth": "^4.24.11",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.23",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "xepelin-growth-case",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm --parallel --filter @xepelin/api --filter @xepelin/worker --filter @xepelin/web dev",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "db:generate": "pnpm --filter @xepelin/infrastructure prisma:generate",
+    "db:push": "pnpm --filter @xepelin/infrastructure prisma:push",
+    "db:migrate": "pnpm --filter @xepelin/infrastructure prisma:migrate",
+    "demo:seed": "tsx scripts/seed-demo.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}

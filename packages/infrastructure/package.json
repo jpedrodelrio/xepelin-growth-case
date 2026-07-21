@@ -1,0 +1,29 @@
+{
+  "name": "@xepelin/infrastructure",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": { ".": "./dist/index.js" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "prisma:generate": "node --env-file=../../.env ./node_modules/prisma/build/index.js generate",
+    "prisma:push": "node --env-file=../../.env ./node_modules/prisma/build/index.js db push",
+    "prisma:migrate": "node --env-file=../../.env ./node_modules/prisma/build/index.js migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "@xepelin/core": "workspace:*",
+    "bullmq": "^5.41.9",
+    "ioredis": "^5.5.0",
+    "openai": "^4.87.3",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.4.1",
+    "vitest": "^3.0.7"
+  }
+}
