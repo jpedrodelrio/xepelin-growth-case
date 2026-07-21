@@ -12,7 +12,7 @@ export function DemoBatchButton() {
     setLoading(true); setError("");
     try {
       const fixture = await fetch("/demo-batch.json").then((response) => response.json());
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api"}/batches`, {
+      const response = await fetch("/api/growth/batches", {
         method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(fixture),
       });
       if (!response.ok) throw new Error(`La API respondió ${response.status}`);
