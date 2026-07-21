@@ -12,6 +12,10 @@
     "db:generate": "pnpm --filter @xepelin/infrastructure prisma:generate",
     "db:push": "pnpm --filter @xepelin/infrastructure prisma:push",
     "db:migrate": "pnpm --filter @xepelin/infrastructure prisma:migrate",
+    "db:deploy": "pnpm --filter @xepelin/infrastructure prisma:deploy",
+    "start:api": "pnpm --filter @xepelin/api start",
+    "start:worker": "pnpm --filter @xepelin/worker start",
+    "start:web": "pnpm --filter @xepelin/web start",
     "demo:seed": "tsx scripts/seed-demo.ts"
   },
   "devDependencies": {

@@ -12,7 +12,8 @@
     "test": "vitest run --passWithNoTests",
     "prisma:generate": "node --env-file=../../.env ./node_modules/prisma/build/index.js generate",
     "prisma:push": "node --env-file=../../.env ./node_modules/prisma/build/index.js db push",
-    "prisma:migrate": "node --env-file=../../.env ./node_modules/prisma/build/index.js migrate dev"
+    "prisma:migrate": "node --env-file=../../.env ./node_modules/prisma/build/index.js migrate dev",
+    "prisma:deploy": "node --env-file=../../.env ./node_modules/prisma/build/index.js migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",

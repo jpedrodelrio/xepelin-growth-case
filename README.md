@@ -185,15 +185,36 @@ Búsqueda e infraestructura probablemente dominan el costo. Orden de optimizaci�
 
 ## Deploy en Railway
 
-Crear un proyecto con PostgreSQL y Redis, y tres servicios desde este repo:
+Crear un proyecto con PostgreSQL y Redis, y tres servicios conectados al mismo repositorio. No configurar un root directory: API, worker y web comparten los packages del workspace.
 
 | Servicio | Start command | Puerto |
 |---|---|---|
-| API | `pnpm db:migrate && pnpm --filter @xepelin/api start` | `3001` |
-| Worker | `pnpm --filter @xepelin/worker start` | — |
-| Web | `pnpm --filter @xepelin/web start` | `3000` |
+| API | `sh -c 'pnpm db:deploy && pnpm start:api'` | Railway asigna `PORT` |
+| Worker | `pnpm start:worker` | — |
+| Web | `pnpm start:web` | Railway asigna `PORT` |
 
-Compartir `DATABASE_URL`, `REDIS_URL`, `WEB_URL` y providers entre API/worker. En web configurar `API_URL`, `NEXT_PUBLIC_API_URL`, `NEXTAUTH_URL` y `NEXTAUTH_SECRET`.
+Variables de API y worker:
+
+```env
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+REDIS_URL=${{Redis.REDIS_URL}}
+AI_PROVIDER=demo
+PUBLIC_INFO_PROVIDER=demo
+WEBHOOK_PROVIDER=demo
+WEB_URL=https://<dominio-web>
+```
+
+Variables del servicio web:
+
+```env
+API_URL=https://<dominio-api>/api
+NEXT_PUBLIC_API_URL=https://<dominio-api>/api
+NEXTAUTH_URL=https://<dominio-web>
+NEXTAUTH_SECRET=<secreto-aleatorio>
+AUTH_DEMO_MODE=true
+```
+
+Generar dominios públicos sólo para API y web. El worker se comunica con PostgreSQL y Redis mediante private networking y no necesita dominio.
 
 Para Google OAuth, agregar `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET`; en producción usar allowlist/dominio corporativo. El modo credentials existe sólo para el demo sintético.
 
