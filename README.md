@@ -335,4 +335,4 @@ El esfuerzo total superó el objetivo de 4–6 horas porque se añadió hardenin
 
 ## Estrategia Growth
 
-El diagnóstico, priorización, experimento y build-vs-buy están documentados en [docs/GROWTH_STRATEGY.md](docs/GROWTH_STRATEGY.md). La presentación final, con tres slides sobre prompts, evaluación y operación a 10K empresas/mes, está en [output/slides/xepelin-growth-engineer-case-final-v3.pptx](output/slides/xepelin-growth-engineer-case-final-v3.pptx).
+El diagnóstico, priorización, experimento y build-vs-buy están documentados en [docs/GROWTH_STRATEGY.md](docs/GROWTH_STRATEGY.md). La presentación final está disponible en [PDF](output/slides/PRESENTACION-JosePedroDelRio.pdf) para revisión rápida y en su [fuente Keynote](output/slides/PRESENTACION-JosePedroDelRio.key).

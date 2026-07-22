@@ -41,6 +41,6 @@ Ejecutada el **2026-07-21 UTC**:
 | `pnpm build` | Pass: API, worker, web y packages compartidos |
 | Demo desplegada | Pass: 20 leads, 16 `ai_ready`, 4 fallos esperados, batch `completed` |
 | Webhook live | Pass: HTTP 200, un intento, `Idempotency-Key` comprobada |
-| Presentación | Pass: 8 slides, sin overflow y sin desviaciones de plantilla |
+| Presentación | Pass: 14 slides, exportación PDF revisada sin cortes ni problemas visuales |
 
 La cobertura automatizada se concentra deliberadamente en reglas puras y el caso de uso principal. Los adaptadores de infraestructura se verificaron mediante build y smoke tests del deploy; ampliar integración automatizada sería la siguiente inversión de calidad.
