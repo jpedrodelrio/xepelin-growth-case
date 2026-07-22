@@ -115,3 +115,37 @@ tbody tr:hover { background: #fafbff; }
   .deliverySummary { align-items: flex-start; flex-direction: column; }
   .webhookLogMetadata { grid-template-columns: 1fr; }
 }
+
+.sectionTitle { font-size: 15px; font-weight: 800; margin: 30px 0 14px; }
+.leadList { display: grid; gap: 10px; }
+.lc-card { background: white; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.lc-card.open { border-color: #d1d7ee; box-shadow: 0 10px 34px rgba(23, 32, 67, .07); }
+.lc-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; background: none; border: 0; cursor: pointer; text-align: left; }
+.lc-head-main { min-width: 0; }
+.lc-co { font-weight: 700; font-size: 15px; color: var(--ink); }
+.lc-sub { color: var(--muted); font-size: 12px; margin-top: 2px; overflow-wrap: anywhere; }
+.lc-head-right { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+.lc-scoreWrap { display: flex; align-items: center; gap: 7px; }
+.lc-score { font-size: 22px; font-weight: 830; color: var(--blue); letter-spacing: -.03em; }
+.lc-chev { color: #9aa0b5; font-size: 12px; }
+.lc-body { padding: 16px 18px 18px; display: grid; gap: 16px; border-top: 1px solid #eef0f7; }
+.lc-lbl { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 800; margin: 0 0 6px; }
+.lc-fld { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 10px; color: #5a63f0; background: #eef0ff; border: 1px solid #dfe3ff; border-radius: 5px; padding: 1px 6px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+.lc-conf { font-size: 10px; font-weight: 800; color: var(--warning); background: #fff4df; border: 1px solid #f0dfae; border-radius: 999px; padding: 2px 9px; letter-spacing: .04em; }
+.lc-hero { background: var(--ice); border: 1px solid #dfe4ff; border-radius: 12px; padding: 14px 16px; position: relative; }
+.lc-hero p { margin: 0; font-size: 15px; color: #1c2547; line-height: 1.5; padding-right: 64px; }
+.lc-copy { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 700; color: var(--blue); border: 1px solid #cdd5ff; background: white; border-radius: 8px; padding: 4px 9px; cursor: pointer; }
+.lc-pain { color: #2a3357; font-size: 14px; line-height: 1.5; }
+.lc-just { color: #3a4266; font-size: 13.5px; line-height: 1.5; }
+.lc-ev { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.lc-ev li { display: flex; gap: 9px; font-size: 13px; color: #4a5170; line-height: 1.4; }
+.lc-dot { flex: 0 0 6px; height: 6px; width: 6px; border-radius: 50%; background: var(--blue); margin-top: 7px; }
+.lc-fail { color: var(--danger); font-size: 14px; line-height: 1.5; }
+.lc-tele { background: #effaf5; border: 1px solid #bfe8d7; border-radius: 12px; padding: 12px 14px; }
+.lc-tele.demo { background: #f5f6fb; border-color: var(--line); }
+.lc-tele-top { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.lc-tele-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 14px; }
+.lc-tl { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 800; }
+.lc-tv { font-size: 15px; font-weight: 800; color: var(--ink); margin-top: 4px; letter-spacing: -.01em; }
+.lc-tv.lc-id { font-size: 11px; font-weight: 600; color: var(--muted); font-family: ui-monospace, SFMono-Regular, monospace; overflow-wrap: anywhere; }
+.lc-tele-legacy { color: var(--muted); font-size: 12px; }
