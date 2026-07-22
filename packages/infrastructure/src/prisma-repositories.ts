@@ -12,6 +12,7 @@ import {
   type BatchWithSummary,
   type CreateBatchInput,
   type DomainFailure,
+  type ExecutionMode,
   type Lead,
   type LeadRepository,
   type LeadStatus as CoreLeadStatus,
@@ -68,12 +69,14 @@ const leadToDb: Record<CoreLeadStatus, LeadStatus> = {
 const leadFromDb = Object.fromEntries(Object.entries(leadToDb).map(([key, value]) => [value, key])) as Record<LeadStatus, CoreLeadStatus>;
 
 function mapBatch(row: DbBatch): Batch {
+  const executionMode: ExecutionMode = row.executionMode === "live" ? "live" : "demo";
   return {
     id: row.id,
     name: row.name,
     segment: row.segment,
     ownerEmail: row.ownerEmail,
     webhookUrl: row.webhookUrl,
+    executionMode,
     status: batchFromDb[row.status],
     webhookSentAt: row.webhookSentAt,
     createdAt: row.createdAt,
@@ -149,6 +152,7 @@ export class PrismaRepositories implements BatchRepository, LeadRepository {
           segment: input.segment,
           ownerEmail: input.ownerEmail,
           webhookUrl: input.webhookUrl,
+          executionMode: input.executionMode,
           leads: {
             create: input.leads.map((lead) => ({
               legalId: lead.legalId,

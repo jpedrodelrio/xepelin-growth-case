@@ -57,6 +57,7 @@ function makeBatch(overrides: Partial<Batch> = {}): Batch {
     segment: "B2B",
     ownerEmail: "growth@example.com",
     webhookUrl: "https://hooks.example.com/xepelin",
+    executionMode: "demo",
     status: "processing",
     webhookSentAt: null,
     createdAt: new Date("2026-07-21T00:00:00.000Z"),

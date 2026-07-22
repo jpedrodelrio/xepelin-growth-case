@@ -67,6 +67,7 @@ export function BatchActions({ capabilities }: { capabilities: ProviderCapabilit
         segment: LIVE_DEFAULTS.segment,
         owner_email: LIVE_DEFAULTS.owner_email,
         webhook_url: webhookUrl.trim(),
+        execution_mode: "live",
         leads: [
           {
             // El RUT es opcional para el research en vivo; placeholder si no se ingresa.

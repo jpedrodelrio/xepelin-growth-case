@@ -88,6 +88,7 @@ Resultado esperado del Anexo A:
   "segment": "pyme_servicios",
   "owner_email": "sdr.demo@xepelin.com",
   "webhook_url": "https://webhook.site/uuid",
+  "execution_mode": "demo",
   "leads": [
     {
       "legal_id": "MAGE920101AB1",
@@ -129,7 +130,7 @@ BRAVE_SEARCH_API_KEY=...
 
 Para que la UI refleje las capacidades reales, `AI_PROVIDER`, `PUBLIC_INFO_PROVIDER`, `WEBHOOK_PROVIDER` y la presencia opcional de `BRAVE_SEARCH_API_KEY` deben configurarse como variables compartidas entre API y worker. El endpoint de capacidades sólo publica nombres y modos; nunca devuelve valores de credenciales.
 
-La prueba real de la UI exige `WEBHOOK_PROVIDER=live` y solicita una URL explícita de Webhook.site. No persiste una URL receptora por defecto. El adaptador bloquea hosts privados y redirects para reducir el riesgo de SSRF. Mientras los providers estén en modo live, el botón del fixture demo queda deshabilitado para evitar consumo accidental de OpenAI y envíos a endpoints ficticios.
+Cada batch persiste `execution_mode` (`demo` por defecto o `live`). Esto permite mantener ambos botones disponibles: el fixture demo selecciona adaptadores determinísticos sin costo ni tráfico externo, mientras la prueba real exige providers live y solicita una URL explícita de Webhook.site. El adaptador HTTP bloquea hosts privados y redirects para reducir el riesgo de SSRF.
 
 El adapter OpenAI usa Responses API + Structured Outputs y vuelve a validar el resultado con Zod. Se usa un snapshot de `gpt-5-mini` para controlar regresiones; el modelo soporta Structured Outputs y su precio publicado es USD 0,25/M tokens de entrada y USD 2/M de salida: <https://developers.openai.com/api/docs/models/gpt-5-mini>.
 

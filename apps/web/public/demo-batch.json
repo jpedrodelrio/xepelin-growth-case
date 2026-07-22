@@ -3,6 +3,7 @@
   "segment": "pyme_servicios",
   "owner_email": "sdr.demo@xepelin.com",
   "webhook_url": "https://webhook.site/demo-xepelin-growth",
+  "execution_mode": "demo",
   "leads": [
     { "legal_id": "76.123.456-7", "legal_name": "Comercializadora Andes SpA", "website": "https://comercializadoraandes.cl" },
     { "legal_id": "MAGE920101AB1", "legal_name": "Manufacturas Aguila SA de CV", "website": "https://manufacturasaguila.mx" },

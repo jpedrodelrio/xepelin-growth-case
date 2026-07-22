@@ -1,5 +1,5 @@
 export interface BatchSummary { total: number; ready: number; failed: number; pending: number; readyPercentage: number; failedPercentage: number }
-export interface BatchListItem { id: string; name: string; segment: string; ownerEmail: string; status: string; createdAt: string; summary: BatchSummary }
+export interface BatchListItem { id: string; name: string; segment: string; ownerEmail: string; executionMode: "demo" | "live"; status: string; createdAt: string; summary: BatchSummary }
 export interface AiExecutionMetadata {
   provider: string; mode: "demo" | "live"; model: string | null; responseId: string | null;
   completedAt: string; latencyMs: number; maxOutputTokens: number | null; reasoningEffort: string | null;

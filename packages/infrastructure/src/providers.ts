@@ -54,6 +54,12 @@ export class HttpWebsiteAvailabilityChecker implements WebsiteAvailabilityChecke
   }
 }
 
+export class DemoWebsiteAvailabilityChecker implements WebsiteAvailabilityChecker {
+  async check(): Promise<boolean> {
+    return true;
+  }
+}
+
 export class DemoPublicInfoProvider implements PublicInfoProvider {
   async fetch(lead: Lead): Promise<PublicCompanyInfo> {
     const domain = lead.domain ?? new URL(lead.website).hostname;

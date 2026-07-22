@@ -30,6 +30,7 @@ model Batch {
   segment        String
   ownerEmail     String
   webhookUrl     String
+  executionMode  String   @default("demo")
   status         BatchStatus @default(PENDING)
   webhookSentAt  DateTime?
   createdAt      DateTime @default(now())

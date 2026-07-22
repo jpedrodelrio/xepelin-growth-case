@@ -133,7 +133,7 @@ export default async function BatchDetailPage({ params }: { params: Promise<{ id
   return (
     <AppShell><main className="container">
       <Link className="back" href="/batches">← Todos los batches</Link>
-      <div className="headerRow"><div><div className="eyebrow">{batch.segment}</div><h1>{batch.name}</h1><p className="subtitle">Owner: {batch.ownerEmail}</p></div><RetryButton batchId={batch.id} /></div>
+      <div className="headerRow"><div><div className="eyebrow">{batch.segment} · {batch.executionMode}</div><h1>{batch.name}</h1><p className="subtitle">Owner: {batch.ownerEmail}</p></div><RetryButton batchId={batch.id} /></div>
       <div className="stats">
         <div className="stat"><div className="statLabel">Total</div><div className="statValue">{batch.summary.total}</div></div>
         <div className="stat"><div className="statLabel">Ready</div><div className="statValue">{batch.summary.ready}</div></div>

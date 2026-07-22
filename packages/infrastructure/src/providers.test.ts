@@ -1,6 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Lead, PublicCompanyInfo } from "@xepelin/core";
-import { DemoAiEnrichmentProvider, DemoPublicInfoProvider, estimateOpenAiCostUsd, LivePublicInfoProvider } from "./providers.js";
+import { createAiProvider, createPublicInfoProvider, createWebhookSender, createWebsiteChecker } from "./factories.js";
+import {
+  DemoAiEnrichmentProvider,
+  DemoPublicInfoProvider,
+  DemoWebsiteAvailabilityChecker,
+  estimateOpenAiCostUsd,
+  LivePublicInfoProvider,
+} from "./providers.js";
 
 const lead: Lead = {
   id: "lead-1",
@@ -28,7 +35,21 @@ const publicInfo: PublicCompanyInfo = {
 };
 
 describe("AI providers", () => {
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it("keeps every demo adapter deterministic even when live providers are configured", () => {
+    vi.stubEnv("AI_PROVIDER", "openai");
+    vi.stubEnv("PUBLIC_INFO_PROVIDER", "live");
+    vi.stubEnv("WEBHOOK_PROVIDER", "live");
+
+    expect(createWebsiteChecker("demo")).toBeInstanceOf(DemoWebsiteAvailabilityChecker);
+    expect(createPublicInfoProvider("demo")).toBeInstanceOf(DemoPublicInfoProvider);
+    expect(createAiProvider("demo")).toBeInstanceOf(DemoAiEnrichmentProvider);
+    expect(createWebhookSender("demo").mode).toBe("demo");
+  });
 
   it("builds two differentiated synthetic public sources", async () => {
     const info = await new DemoPublicInfoProvider().fetch({

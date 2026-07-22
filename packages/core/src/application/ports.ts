@@ -6,6 +6,7 @@ import type {
   BatchStatus,
   BatchWithSummary,
   DomainFailure,
+  ExecutionMode,
   Lead,
   LeadStatus,
   PublicCompanyInfo,
@@ -17,6 +18,7 @@ export interface CreateBatchInput {
   segment: string;
   ownerEmail: string;
   webhookUrl: string;
+  executionMode: ExecutionMode;
   leads: Array<{ legalId: string; legalName: string; website: string }>;
 }
 

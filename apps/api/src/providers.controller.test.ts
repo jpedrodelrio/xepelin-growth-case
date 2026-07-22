@@ -11,7 +11,7 @@ describe("provider capabilities", () => {
       ai: { mode: "live", provider: "openai" },
       publicInfo: { mode: "live", source: "wikipedia" },
       webhook: { mode: "live" },
-      demoReady: false,
+      demoReady: true,
       liveResearchReady: true,
     });
   });
@@ -29,10 +29,14 @@ describe("provider capabilities", () => {
     expect(JSON.stringify(result)).not.toContain("configured");
   });
 
-  it("only enables the deterministic demo when every provider is in demo mode", () => {
-    const result = getProviderCapabilities({});
+  it("keeps the deterministic demo available while live providers are configured", () => {
+    const result = getProviderCapabilities({
+      AI_PROVIDER: "openai",
+      PUBLIC_INFO_PROVIDER: "live",
+      WEBHOOK_PROVIDER: "live",
+    });
 
     expect(result.demoReady).toBe(true);
-    expect(result.liveResearchReady).toBe(false);
+    expect(result.liveResearchReady).toBe(true);
   });
 });

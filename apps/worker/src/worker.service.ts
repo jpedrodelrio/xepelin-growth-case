@@ -2,12 +2,12 @@ import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/commo
 import { CompleteBatch, ProcessLead } from "@xepelin/core";
 import {
   BATCH_QUEUE,
-  HttpWebsiteAvailabilityChecker,
   PrismaRepositories,
   createAiProvider,
   createPublicInfoProvider,
   createRedisConnection,
   createWebhookSender,
+  createWebsiteChecker,
 } from "@xepelin/infrastructure";
 import { Worker } from "bullmq";
 
@@ -18,24 +18,25 @@ export class WorkerService implements OnModuleInit, OnModuleDestroy {
   private worker?: Worker<{ batchId: string }>;
 
   onModuleInit(): void {
-    const processLead = new ProcessLead(
-      this.repositories,
-      new HttpWebsiteAvailabilityChecker(),
-      createPublicInfoProvider(),
-      createAiProvider(),
-    );
-    const completeBatch = new CompleteBatch(
-      this.repositories,
-      this.repositories,
-      createWebhookSender(),
-      process.env.WEB_URL ?? "http://localhost:3000",
-    );
-
     this.worker = new Worker<{ batchId: string }>(
       BATCH_QUEUE,
       async (job) => {
         const { batchId } = job.data;
-        this.logger.log({ event: "batch_started", batchId, jobId: job.id });
+        const batch = await this.repositories.getBatch(batchId);
+        if (!batch) throw new Error(`Batch ${batchId} not found`);
+        const processLead = new ProcessLead(
+          this.repositories,
+          createWebsiteChecker(batch.executionMode),
+          createPublicInfoProvider(batch.executionMode),
+          createAiProvider(batch.executionMode),
+        );
+        const completeBatch = new CompleteBatch(
+          this.repositories,
+          this.repositories,
+          createWebhookSender(batch.executionMode),
+          process.env.WEB_URL ?? "http://localhost:3000",
+        );
+        this.logger.log({ event: "batch_started", batchId, jobId: job.id, executionMode: batch.executionMode });
         await this.repositories.setStatus(batchId, "processing");
         const pending = (await this.repositories.listByBatch(batchId)).filter((lead) => lead.status === "pending");
 

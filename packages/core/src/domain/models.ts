@@ -10,6 +10,7 @@ export const leadStatuses = [
 
 export type LeadStatus = (typeof leadStatuses)[number];
 export type BatchStatus = "pending" | "processing" | "completed" | "failed";
+export type ExecutionMode = "demo" | "live";
 
 export type FailureStage =
   | "validation"
@@ -90,6 +91,7 @@ export interface Batch {
   segment: string;
   ownerEmail: string;
   webhookUrl: string;
+  executionMode: ExecutionMode;
   status: BatchStatus;
   webhookSentAt: Date | null;
   createdAt: Date;
