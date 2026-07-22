@@ -1,0 +1,125 @@
+{
+  "description": "Golden set del AI-enrichment. expectedScoreBand = [min,max] razonable segun ICP de Xepelin.",
+  "cases": [
+    {
+      "legalName": "Rhona S.A.",
+      "website": "https://www.rhona.cl",
+      "country": "CL",
+      "profile": "Distribuidor electrico B2B, multi-SKU, regional",
+      "expectedScoreBand": [
+        78,
+        92
+      ],
+      "expectedPain": "capital de trabajo",
+      "icp": "alto"
+    },
+    {
+      "legalName": "Distribuidora de insumos de oficina",
+      "website": null,
+      "country": "CL",
+      "profile": "Mayorista B2B con inventario",
+      "expectedScoreBand": [
+        75,
+        90
+      ],
+      "expectedPain": "financiamiento de inventario",
+      "icp": "alto"
+    },
+    {
+      "legalName": "Manufactura de alimentos",
+      "website": null,
+      "country": "MX",
+      "profile": "Produccion, proveedores, facturacion B2B",
+      "expectedScoreBand": [
+        78,
+        92
+      ],
+      "expectedPain": "pago a proveedores",
+      "icp": "alto"
+    },
+    {
+      "legalName": "Importadora y comercializadora",
+      "website": null,
+      "country": "CL",
+      "profile": "Capital inmovilizado en importaciones",
+      "expectedScoreBand": [
+        72,
+        90
+      ],
+      "expectedPain": "financiamiento",
+      "icp": "alto"
+    },
+    {
+      "legalName": "Consultora TI y servicios B2B",
+      "website": null,
+      "country": "MX",
+      "profile": "Factura a empresas, cobros a 60-90 dias",
+      "expectedScoreBand": [
+        62,
+        92
+      ],
+      "expectedPain": "gestion de flujo de caja",
+      "icp": "medio"
+    },
+    {
+      "legalName": "Agroexportadora",
+      "website": null,
+      "country": "CL",
+      "profile": "Ciclos largos, estacional",
+      "expectedScoreBand": [
+        65,
+        95
+      ],
+      "expectedPain": "financiamiento pre-cosecha",
+      "icp": "medio"
+    },
+    {
+      "legalName": "Constructora PyME",
+      "website": null,
+      "country": "CL",
+      "profile": "Ciclos por avance de obra",
+      "expectedScoreBand": [
+        60,
+        92
+      ],
+      "expectedPain": "capital de trabajo por proyecto",
+      "icp": "medio"
+    },
+    {
+      "legalName": "Cafeteria al consumidor",
+      "website": null,
+      "country": "CL",
+      "profile": "Venta al contado, sin ciclo B2B",
+      "expectedScoreBand": [
+        5,
+        45
+      ],
+      "expectedPain": null,
+      "icp": "bajo"
+    },
+    {
+      "legalName": "Gran retailer / holding",
+      "website": null,
+      "country": "CL",
+      "profile": "Enterprise con tesoreria propia",
+      "expectedScoreBand": [
+        5,
+        30
+      ],
+      "expectedPain": null,
+      "icp": "bajo"
+    },
+    {
+      "legalName": "Freelancer sin web",
+      "website": null,
+      "country": "CL",
+      "profile": "Sin volumen ni presencia digital",
+      "expectedScoreBand": [
+        10,
+        40
+      ],
+      "expectedPain": null,
+      "icp": "bajo"
+    }
+  ]
+}

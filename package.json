@@ -19,7 +19,8 @@
     "demo:seed": "tsx scripts/seed-demo.ts",
     "demo:seed:llm": "node --env-file=.env --import tsx scripts/seed-llm-scenarios.ts",
     "proof:openai": "node --env-file=.env --import tsx scripts/prove-openai-live.ts",
-    "estimate:ai-capacity": "node --import tsx scripts/estimate-ai-capacity.ts"
+    "estimate:ai-capacity": "node --import tsx scripts/estimate-ai-capacity.ts",
+    "eval:golden": "node --env-file=.env --import tsx scripts/golden-eval.ts"
   },
   "devDependencies": {
     "tsx": "^4.19.3",

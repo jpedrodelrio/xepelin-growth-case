@@ -256,6 +256,8 @@ Semántica del webhook: **at-least-once**. La idempotency key permite que el rec
 6. Feedback útil/no útil del SDR.
 7. A/B sobre response rate y enrolamientos.
 
+**Corrible, no sólo teoría:** `pnpm eval:golden` ejecuta el enricher real sobre un golden set de 10 casos ([`fixtures/golden-set.json`](fixtures/golden-set.json)) —fit alto/medio/bajo, mix CL/MX— y reporta `schema_valid_rate` y `score_in_band`. El caso clave verifica que una gran corporación con tesorería propia puntúe **bajo**: prueba que el `prospect_fit_score` respeta el ICP y no se deja llevar por la fama de la marca.
+
 ### Costo aproximado a 10K empresas/mes
 
 Supuesto: 2.000 tokens de entrada + 250 de salida por empresa.
