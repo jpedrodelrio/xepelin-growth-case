@@ -12,8 +12,8 @@ export default async function BatchesPage() {
       <main className="container">
         <div className="headerRow">
           <div><div className="eyebrow">Pipeline pre-enrolamiento</div><h1>Batches de outbound</h1><p className="subtitle">Pipeline asíncrono, observable y tolerante a fallos parciales.</p></div>
-          <BatchActions capabilities={capabilities} />
         </div>
+        <BatchActions capabilities={capabilities} />
         <section className="surface tableWrap">
           {batches.length === 0 ? <div className="empty">No hay batches todavía. Ejecuta el payload sintético del caso.</div> : (
             <table><thead><tr><th>Batch</th><th>Modo</th><th>Segmento</th><th>Owner</th><th>Fecha</th><th>Estado</th><th>Ready</th><th>Failed</th></tr></thead>
