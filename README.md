@@ -209,7 +209,7 @@ Para crear los tres escenarios se omite `--scenario`. Son ocho llamadas AI váli
 | Sitio + fuente adicional | `DemoPublicInfoProvider`: dos fuentes sintéticas; `LivePublicInfoProvider`: sitio + Brave Search o fallback gratuito a Wikipedia |
 | Output estructurado | Responses API con Structured Outputs y schema Zod |
 | Persistencia y terminalidad | Output y metadata se guardan antes de `ai_ready`; fallas terminan en `ai_failed` con razón tipada |
-| Vista detalle | Score, justificación, ice-breaker, pain hypothesis, evidencia y telemetría live/demo |
+| Vista detalle | Score, justificación, ice-breaker, pain hypothesis, evidencia, telemetría live/demo y tiempos end-to-end por lead y batch |
 | Cierre y webhook | El batch espera todos los estados terminales y emite un único evento lógico idempotente |
 
 ### Prompt
@@ -258,17 +258,11 @@ Semántica del webhook: **at-least-once**. La idempotency key permite que el rec
 
 **Corrible, no sólo teoría:** `pnpm eval:golden` ejecuta el enricher real sobre un golden set de 10 casos ([`fixtures/golden-set.json`](fixtures/golden-set.json)) —fit alto/medio/bajo, mix CL/MX— y reporta `schema_valid_rate` y `score_in_band`. El caso clave verifica que una gran corporación con tesorería propia puntúe **bajo**: prueba que el `prospect_fit_score` respeta el ICP y no se deja llevar por la fama de la marca.
 
+El `prospect_fit_score` es una **señal direccional** para priorizar la cola del SDR, no una nota exacta: varía entre corridas y según cuánta evidencia se envíe, por eso se evalúa con **bandas** —no valores exactos— y el campo `confidence` refleja la incertidumbre (menos evidencia → score más bajo y confianza media).
+
 ### Costo aproximado a 10K empresas/mes
 
-Supuesto: 2.000 tokens de entrada + 250 de salida por empresa.
-
-```text
-Entrada: 20M × USD 0,25/M = USD 5
-Salida:  2,5M × USD 2/M = USD 5
-LLM estimado por presupuesto: USD 10/mes
-```
-
-La ejecución live end-to-end costó USD 0,001134; extrapolarla sin descuentos da USD 11,34 por 10K. Por eso la cifra defendible es **aproximadamente USD 10–11/mes de LLM**. Búsqueda e infraestructura probablemente dominan el costo. Orden de optimización: cache por contenido/dominio, refrescar sólo registros vencidos, no llamar al LLM sin evidencia, compactar prompt, usar modelos pequeños y Batch API para trabajos no urgentes.
+Medido sobre **7 corridas reales** (detalle en [`docs/AI_CAPACITY.md`](docs/AI_CAPACITY.md)): promedio **USD 0,00137 por empresa → ~USD 14 por 10K/mes**, rango USD 9–17 según cuánto texto del sitio se envía al modelo. El LLM **no es el costo dominante** — búsqueda e infraestructura pesan más. Orden de optimización: cache por contenido/dominio, refrescar sólo registros vencidos, no llamar al LLM sin evidencia, compactar prompt, modelos pequeños y Batch API para trabajos no urgentes.
 
 ### Latencia y capacidad aproximadas a 10K empresas/mes
 

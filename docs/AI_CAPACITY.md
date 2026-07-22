@@ -4,12 +4,17 @@
 
 Se observaron dos llamadas reales a `gpt-5-mini-2025-08-07`:
 
-| Ejecución | Latencia AI | Tokens totales |
-|---|---:|---:|
-| Prueba local controlada | 5,525 s | 761 |
-| Prueba end-to-end en Railway | 8,670 s | 854 |
+| Ejecución (real) | Latencia AI | Tokens | Costo USD |
+|---|---:|---:|---:|
+| Prueba local controlada | 5,53 s | 761 | 0,000932 |
+| Prueba end-to-end Railway | 8,67 s | 854 | 0,001134 |
+| ICB (live) | 5,25 s | 1.712 | 0,001492 |
+| ICB (live, 2ª) | 7,25 s | 1.625 | 0,001400 |
+| Blumar (live) | 5,60 s | 3.239 | 0,001685 |
+| OMAJ (live) | 3,98 s | 2.035 | 0,001259 |
+| Rhona (live) | 8,11 s | 3.072 | 0,001697 |
 
-Dos muestras no permiten declarar un p95. Para capacity planning se redondea de forma conservadora a **10 segundos de AI + 2 segundos de website, cola y persistencia = 12 segundos por empresa**.
+Siete corridas reales dan latencias de **~4 a 9 s** por empresa; aún pocas para declarar un p95, así que para capacity planning se redondea de forma conservadora a **10 s de AI + 2 s de website, cola y persistencia = 12 s por empresa**.
 
 ## Resultado para 10.000 empresas/mes
 
@@ -27,7 +32,7 @@ tiempo total = ceil(empresas / concurrencia efectiva) × 12 segundos
 
 Con 854 tokens observados por empresa, el escenario de concurrencia 10 consumiría aproximadamente **42.700 tokens/minuto**. La restricción práctica inicial no es la capacidad del worker, sino controlar costo, rate limits del proveedor y calidad.
 
-La ejecución end-to-end costó USD 0,001134; extrapolada linealmente representa USD 11,34 por 10K empresas, consistente con el presupuesto documentado de aproximadamente USD 10–11/mes de LLM.
+Las siete corridas reales promedian **USD 0,00137 por empresa → ~USD 14 por 10K/mes** (rango USD 9–17 según cuánto texto del sitio se envía al modelo). El LLM **no es el costo dominante**: la búsqueda y la infraestructura pesan más. Comprimir el prompt (no mandar el HTML completo) baja el extremo alto del rango.
 
 ## SLO e instrumentación
 
