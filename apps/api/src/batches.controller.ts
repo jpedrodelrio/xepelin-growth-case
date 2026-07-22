@@ -7,7 +7,9 @@ const createBatchSchema = z.object({
   name: z.string().trim().min(1).max(120),
   segment: z.string().trim().min(1).max(80),
   owner_email: z.string().email(),
-  webhook_url: z.string().url(),
+  webhook_url: z.string().url().refine((value) => ["http:", "https:"].includes(new URL(value).protocol), {
+    message: "webhook_url must use HTTP or HTTPS",
+  }),
   leads: z.array(z.object({
     legal_id: z.string(),
     legal_name: z.string().trim().min(1),

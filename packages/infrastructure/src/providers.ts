@@ -294,6 +294,7 @@ export class HttpWebhookSender implements WebhookSender {
     await assertPublicUrl(url);
     const response = await fetch(url, {
       method: "POST",
+      redirect: "error",
       headers: { "content-type": "application/json", "idempotency-key": input.idempotencyKey },
       body: JSON.stringify(input.payload),
       signal: AbortSignal.timeout(5_000),

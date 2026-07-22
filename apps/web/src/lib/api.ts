@@ -21,6 +21,7 @@ export interface ProviderCapabilities {
   ai: { mode: "demo" | "live"; provider: "demo" | "openai" };
   publicInfo: { mode: "demo" | "live"; source: "synthetic" | "brave" | "wikipedia" };
   webhook: { mode: "demo" | "live" };
+  demoReady: boolean;
   liveResearchReady: boolean;
 }
 
@@ -44,6 +45,7 @@ export async function getProviderCapabilities(): Promise<ProviderCapabilities> {
       ai: { mode: "demo", provider: "demo" },
       publicInfo: { mode: "demo", source: "synthetic" },
       webhook: { mode: "demo" },
+      demoReady: true,
       liveResearchReady: false,
     };
   }

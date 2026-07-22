@@ -13,7 +13,8 @@ export function getProviderCapabilities(env: Record<string, string | undefined> 
     ai,
     publicInfo,
     webhook,
-    liveResearchReady: ai.mode === "live" && publicInfo.mode === "live" && webhook.mode === "demo",
+    demoReady: ai.mode === "demo" && publicInfo.mode === "demo" && webhook.mode === "demo",
+    liveResearchReady: ai.mode === "live" && publicInfo.mode === "live" && webhook.mode === "live",
   };
 }
 

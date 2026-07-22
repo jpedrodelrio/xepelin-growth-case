@@ -4,11 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ProviderCapabilities } from "@/lib/api";
 
-// Defaults reutilizados del fixture de prueba real (owner/webhook demo).
+// Metadatos sintéticos; la URL del webhook siempre debe ingresarla el usuario.
 const LIVE_DEFAULTS = {
   segment: "pyme_servicios",
   owner_email: "growth.synthetic@xepelin.com",
-  webhook_url: "https://webhook.site/demo-xepelin-growth",
 };
 
 function isHttpUrl(value: string): boolean {
@@ -26,6 +25,7 @@ export function BatchActions({ capabilities }: { capabilities: ProviderCapabilit
   const [legalName, setLegalName] = useState("");
   const [website, setWebsite] = useState("");
   const [legalId, setLegalId] = useState("");
+  const [webhookUrl, setWebhookUrl] = useState("");
   const router = useRouter();
 
   async function postBatch(payload: unknown) {
@@ -55,8 +55,8 @@ export function BatchActions({ capabilities }: { capabilities: ProviderCapabilit
   }
 
   async function createLive() {
-    if (!legalName.trim() || !isHttpUrl(website.trim())) {
-      setError("Ingresa una razón social y un sitio web válido (http/https).");
+    if (!legalName.trim() || !isHttpUrl(website.trim()) || !isHttpUrl(webhookUrl.trim())) {
+      setError("Ingresa una razón social, un sitio web y una URL de webhook válidos (http/https).");
       return;
     }
     setCreating("live");
@@ -66,7 +66,7 @@ export function BatchActions({ capabilities }: { capabilities: ProviderCapabilit
         name: `Prueba real · ${legalName.trim()}`,
         segment: LIVE_DEFAULTS.segment,
         owner_email: LIVE_DEFAULTS.owner_email,
-        webhook_url: LIVE_DEFAULTS.webhook_url,
+        webhook_url: webhookUrl.trim(),
         leads: [
           {
             // El RUT es opcional para el research en vivo; placeholder si no se ingresa.
@@ -85,6 +85,7 @@ export function BatchActions({ capabilities }: { capabilities: ProviderCapabilit
 
   const liveSource = capabilities.publicInfo.source === "brave" ? "Brave Search" : "Wikipedia";
   const liveDisabled = creating !== null || !capabilities.liveResearchReady;
+  const demoDisabled = creating !== null || !capabilities.demoReady;
   const inputStyle: React.CSSProperties = {
     padding: "8px 10px",
     borderRadius: 8,
@@ -98,7 +99,7 @@ export function BatchActions({ capabilities }: { capabilities: ProviderCapabilit
   return (
     <div className="batchActions">
       <div className="batchActionButtons">
-        <button className="button buttonSecondary" disabled={creating !== null} onClick={createDemo}>
+        <button className="button buttonSecondary" disabled={demoDisabled} onClick={createDemo}>
           {creating === "demo" ? "Creando…" : "Ejecutar demo"}
         </button>
       </div>
@@ -126,6 +127,15 @@ export function BatchActions({ capabilities }: { capabilities: ProviderCapabilit
           onChange={(e) => setLegalId(e.target.value)}
           disabled={liveDisabled}
         />
+        <input
+          style={{ ...inputStyle, minWidth: 280 }}
+          type="url"
+          aria-label="URL del webhook"
+          placeholder="Webhook.site URL (https://webhook.site/…)"
+          value={webhookUrl}
+          onChange={(e) => setWebhookUrl(e.target.value)}
+          disabled={liveDisabled}
+        />
         <button className="button" disabled={liveDisabled} onClick={createLive}>
           {creating === "live" ? "Investigando…" : "Ejecutar prueba real"}
         </button>
@@ -133,8 +143,8 @@ export function BatchActions({ capabilities }: { capabilities: ProviderCapabilit
 
       <div className={`providerReadiness ${capabilities.liveResearchReady ? "ready" : "blocked"}`}>
         {capabilities.liveResearchReady
-          ? `OpenAI + ${liveSource} · 1 lead · costo estimado menor a USD 0,01`
-          : "Prueba real deshabilitada: requiere OpenAI + public info live + webhook demo"}
+          ? `OpenAI + ${liveSource} + webhook real · 1 lead · costo estimado menor a USD 0,01`
+          : "Prueba real deshabilitada: requiere OpenAI + public info live + webhook live"}
       </div>
       {error && <div className="toast">{error}</div>}
     </div>
