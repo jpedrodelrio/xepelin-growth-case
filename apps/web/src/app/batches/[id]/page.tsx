@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { LeadCard } from "@/components/lead-card";
+import { LiveBatchRefresh } from "@/components/live-batch-refresh";
+import { PipelineEvents } from "@/components/pipeline-events";
 import { RetryButton } from "@/components/retry-button";
 import { getBatch, type BatchDetail } from "@/lib/api";
 import { calculateBatchTimings, formatDuration } from "@/lib/timing";
@@ -69,10 +71,14 @@ export default async function BatchDetailPage({ params }: { params: Promise<{ id
   const leadRange = timings.minLeadDurationMs === null || timings.maxLeadDurationMs === null
     ? "—"
     : `${formatDuration(timings.minLeadDurationMs)}–${formatDuration(timings.maxLeadDurationMs)}`;
+  const isActive = batch.status === "pending" || batch.status === "processing";
   return (
     <AppShell><main className="container">
       <Link className="back" href="/batches">← Todos los batches</Link>
-      <div className="headerRow"><div><div className="eyebrow">{batch.segment} · {batch.executionMode}</div><h1>{batch.name}</h1><p className="subtitle">Owner: {batch.ownerEmail}</p></div><RetryButton batchId={batch.id} /></div>
+      <div className="headerRow">
+        <div><div className="eyebrow">{batch.segment} · {batch.executionMode}</div><h1>{batch.name}</h1><p className="subtitle">Owner: {batch.ownerEmail}</p></div>
+        <div className="batchActions"><LiveBatchRefresh active={isActive} /><RetryButton batchId={batch.id} /></div>
+      </div>
       <div className="stats">
         <div className="stat"><div className="statLabel">Total</div><div className="statValue">{batch.summary.total}</div></div>
         <div className="stat"><div className="statLabel">Ready</div><div className="statValue">{batch.summary.ready}</div></div>
@@ -82,6 +88,7 @@ export default async function BatchDetailPage({ params }: { params: Promise<{ id
         <div className="stat"><div className="statLabel">Promedio por lead</div><div className="statValue statValueCompact">{formatDuration(timings.averageLeadDurationMs)}</div></div>
         <div className="stat"><div className="statLabel">Rango de leads</div><div className="statValue statValueCompact">{leadRange}</div></div>
       </div>
+      <PipelineEvents events={batch.events} leads={batch.leads} />
       <h2 className="sectionTitle">Leads</h2>
       <div className="leadList">
         {batch.leads.map((lead) => (

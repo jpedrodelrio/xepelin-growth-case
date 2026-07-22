@@ -6,6 +6,9 @@ export interface AiExecutionMetadata {
   usage: { inputTokens: number; outputTokens: number; reasoningTokens: number; totalTokens: number } | null;
   estimatedCostUsd: number | null;
 }
+export interface BatchEventItem {
+  id: string; leadId: string | null; type: string; fromStatus: string | null; toStatus: string | null; createdAt: string;
+}
 export interface LeadItem {
   id: string; legalId: string; legalName: string; website: string; status: string; domain: string | null;
   normalizedName: string | null; websiteAlive: boolean | null;
@@ -17,7 +20,7 @@ export interface LeadItem {
 export interface BatchDetail extends BatchListItem {
   updatedAt: string;
   leads: LeadItem[];
-  events: Array<{ id: string; leadId: string | null; type: string; fromStatus: string | null; toStatus: string | null; createdAt: string }>;
+  events: BatchEventItem[];
   webhookDeliveries: Array<{ id: string; mode: "demo" | "live" | "unknown"; attempt: number; statusCode: number | null; error: string | null; createdAt: string }>;
 }
 export interface ProviderCapabilities {

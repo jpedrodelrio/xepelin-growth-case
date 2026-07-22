@@ -209,7 +209,7 @@ Para crear los tres escenarios se omite `--scenario`. Son ocho llamadas AI váli
 | Sitio + fuente adicional | `DemoPublicInfoProvider`: dos fuentes sintéticas; `LivePublicInfoProvider`: sitio + Brave Search o fallback gratuito a Wikipedia |
 | Output estructurado | Responses API con Structured Outputs y schema Zod |
 | Persistencia y terminalidad | Output y metadata se guardan antes de `ai_ready`; fallas terminan en `ai_failed` con razón tipada |
-| Vista detalle | Score, justificación, ice-breaker, pain hypothesis, evidencia, telemetría live/demo y tiempos end-to-end por lead y batch |
+| Vista detalle | Score, justificación, ice-breaker, pain hypothesis, evidencia, telemetría live/demo, tiempos end-to-end y transiciones autoactualizadas |
 | Cierre y webhook | El batch espera todos los estados terminales y emite un único evento lógico idempotente |
 
 ### Prompt
