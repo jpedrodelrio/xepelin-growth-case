@@ -51,6 +51,7 @@ tbody tr:hover { background: #fafbff; }
 .stat { background: white; border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
 .statLabel { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
 .statValue { font-size: 30px; font-weight: 820; margin-top: 6px; letter-spacing: -.04em; }
+.statValueCompact { font-size: 22px; line-height: 1.25; }
 .back { color: var(--blue); font-weight: 700; font-size: 14px; }
 .aiText { max-width: 360px; line-height: 1.45; }
 .fitCell { min-width: 190px; max-width: 240px; }
@@ -129,6 +130,8 @@ tbody tr:hover { background: #fafbff; }
 .lc-score { font-size: 22px; font-weight: 830; color: var(--blue); letter-spacing: -.03em; }
 .lc-chev { color: #9aa0b5; font-size: 12px; }
 .lc-body { padding: 16px 18px 18px; display: grid; gap: 16px; border-top: 1px solid #eef0f7; }
+.lc-duration { align-items: center; background: #f5f6fb; border-radius: 9px; color: var(--muted); display: flex; font-size: 12px; justify-content: space-between; padding: 9px 11px; }
+.lc-duration strong { color: var(--ink); font-size: 14px; }
 .lc-lbl { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 800; margin: 0 0 6px; }
 .lc-fld { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 10px; color: #5a63f0; background: #eef0ff; border: 1px solid #dfe3ff; border-radius: 5px; padding: 1px 6px; font-weight: 600; letter-spacing: 0; text-transform: none; }
 .lc-conf { font-size: 10px; font-weight: 800; color: var(--warning); background: #fff4df; border: 1px solid #f0dfae; border-radius: 999px; padding: 2px 9px; letter-spacing: .04em; }

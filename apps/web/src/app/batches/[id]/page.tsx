@@ -4,6 +4,7 @@ import { AppShell } from "@/components/app-shell";
 import { LeadCard } from "@/components/lead-card";
 import { RetryButton } from "@/components/retry-button";
 import { getBatch, type BatchDetail } from "@/lib/api";
+import { calculateBatchTimings, formatDuration } from "@/lib/timing";
 
 export const dynamic = "force-dynamic";
 
@@ -64,6 +65,10 @@ export default async function BatchDetailPage({ params }: { params: Promise<{ id
   const { id } = await params;
   const batch = await getBatch(id);
   if (!batch) notFound();
+  const timings = calculateBatchTimings(batch);
+  const leadRange = timings.minLeadDurationMs === null || timings.maxLeadDurationMs === null
+    ? "—"
+    : `${formatDuration(timings.minLeadDurationMs)}–${formatDuration(timings.maxLeadDurationMs)}`;
   return (
     <AppShell><main className="container">
       <Link className="back" href="/batches">← Todos los batches</Link>
@@ -73,11 +78,19 @@ export default async function BatchDetailPage({ params }: { params: Promise<{ id
         <div className="stat"><div className="statLabel">Ready</div><div className="statValue">{batch.summary.ready}</div></div>
         <div className="stat"><div className="statLabel">Failed</div><div className="statValue">{batch.summary.failed}</div></div>
         <div className="stat"><div className="statLabel">Estado</div><div style={{ marginTop: 10 }}><span className={`badge ${batch.status}`}>{batch.status}</span></div></div>
+        <div className="stat"><div className="statLabel">Duración batch</div><div className="statValue statValueCompact">{formatDuration(timings.batchDurationMs)}</div></div>
+        <div className="stat"><div className="statLabel">Promedio por lead</div><div className="statValue statValueCompact">{formatDuration(timings.averageLeadDurationMs)}</div></div>
+        <div className="stat"><div className="statLabel">Rango de leads</div><div className="statValue statValueCompact">{leadRange}</div></div>
       </div>
       <h2 className="sectionTitle">Leads</h2>
       <div className="leadList">
         {batch.leads.map((lead) => (
-          <LeadCard key={lead.id} lead={lead} defaultExpanded={batch.leads.length === 1} />
+          <LeadCard
+            key={lead.id}
+            lead={lead}
+            durationMs={timings.leadDurationById[lead.id] ?? null}
+            defaultExpanded={batch.leads.length === 1}
+          />
         ))}
       </div>
       <h2 className="sectionTitle">Entregas del webhook</h2>

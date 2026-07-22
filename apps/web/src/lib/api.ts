@@ -12,9 +12,12 @@ export interface LeadItem {
   failure: { code: string; stage: string; message: string; retryable: boolean } | null;
   aiEnrichment: { prospectFitScore: number; fitJustification: string; iceBreaker: string; painHypothesis: string; confidence: string; evidence: string[] } | null;
   aiExecution: AiExecutionMetadata | null;
+  createdAt: string; updatedAt: string;
 }
 export interface BatchDetail extends BatchListItem {
+  updatedAt: string;
   leads: LeadItem[];
+  events: Array<{ id: string; leadId: string | null; type: string; fromStatus: string | null; toStatus: string | null; createdAt: string }>;
   webhookDeliveries: Array<{ id: string; mode: "demo" | "live" | "unknown"; attempt: number; statusCode: number | null; error: string | null; createdAt: string }>;
 }
 export interface ProviderCapabilities {

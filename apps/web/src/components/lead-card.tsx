@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { AiExecutionMetadata, LeadItem } from "@/lib/api";
+import { formatDuration } from "@/lib/timing";
 
 function formatCost(value: number | null): string {
   if (value === null) return "No calculado";
@@ -22,7 +23,7 @@ function Telemetry({ execution }: { execution: AiExecutionMetadata | null }) {
         <div><div className="lc-tl">Modelo</div><div className="lc-tv">{execution.model ?? "—"}</div></div>
         <div><div className="lc-tl">Tokens</div><div className="lc-tv">{execution.usage?.totalTokens ?? "—"}</div></div>
         <div><div className="lc-tl">Costo est.</div><div className="lc-tv">{formatCost(execution.estimatedCostUsd)}</div></div>
-        <div><div className="lc-tl">Latencia</div><div className="lc-tv">{(execution.latencyMs / 1_000).toFixed(2)} s</div></div>
+        <div><div className="lc-tl">Latencia AI</div><div className="lc-tv">{formatDuration(execution.latencyMs)}</div></div>
         <div><div className="lc-tl">Reasoning</div><div className="lc-tv">{execution.usage?.reasoningTokens ?? "—"}</div></div>
         {execution.responseId && (
           <div><div className="lc-tl">Response ID</div><div className="lc-tv lc-id">{execution.responseId}</div></div>
@@ -32,7 +33,15 @@ function Telemetry({ execution }: { execution: AiExecutionMetadata | null }) {
   );
 }
 
-export function LeadCard({ lead, defaultExpanded = false }: { lead: LeadItem; defaultExpanded?: boolean }) {
+export function LeadCard({
+  lead,
+  durationMs,
+  defaultExpanded = false,
+}: {
+  lead: LeadItem;
+  durationMs: number | null;
+  defaultExpanded?: boolean;
+}) {
   const [open, setOpen] = useState(defaultExpanded);
   const [copied, setCopied] = useState(false);
   const ai = lead.aiEnrichment;
@@ -74,6 +83,10 @@ export function LeadCard({ lead, defaultExpanded = false }: { lead: LeadItem; de
 
       {open && (
         <div className="lc-body">
+          <div className="lc-duration">
+            <span>Tiempo end-to-end</span>
+            <strong>{formatDuration(durationMs)}</strong>
+          </div>
           {lead.failure ? (
             <div className="lc-fail">
               <strong>{lead.failure.code}</strong> — {lead.failure.message}
